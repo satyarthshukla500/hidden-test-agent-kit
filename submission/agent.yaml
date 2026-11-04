@@ -1,0 +1,18 @@
+name: bugfixer
+agent_class: LlmAgent
+model: gemma-4-e4b-it-qat-w4a16-ct
+description: Root agent. Fixes one Python bug per task and submits a patch.
+instruction: !include prompts/system.md
+generate_content_config: !include configs/sampling.yaml
+tools:
+  - agent_tool:
+      config_path: sub_agents/code_analyzer.yaml
+      skip_summarization: true
+  - run_command
+  - read_file
+  - edit_file
+  - write_file
+  - search_similar_code
+  - get_code_neighbors
+  - submit_patch
+  - get_status
