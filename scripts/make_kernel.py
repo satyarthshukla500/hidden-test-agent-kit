@@ -35,6 +35,7 @@ TAG = __TAG__
 MODEL_NAME = __MODEL__
 TASK_IDS = __TASK_IDS__          # empty list = all tasks
 SKIP_AGENT_PATCH = __SKIP__      # True = baseline verification only, no LLM
+CONCURRENCY = __CONC__
 SUBMISSION_B64 = __ZIP__
 
 for k, v in {
@@ -209,51 +210,144 @@ def dump(obj):
 
 
 (OUT / 'patches').mkdir(exist_ok=True)
+import inspect
+print('Evaluator methods:', [m for m in dir(Evaluator) if not m.startswith('__')], flush=True)
+print('evaluate_task sig:', inspect.signature(evaluator.evaluate_task),
+      'coroutine:', inspect.iscoroutinefunction(evaluator.evaluate_task), flush=True)
 rows = []
-for i, task in enumerate(tasks, 1):
-    t0 = time.time()
-    try:
-        r = run_sync(evaluator.evaluate_task, task=task, task_index=i, total_tasks=len(tasks))
+done = [0]
+
+
+def record(i, task, r, exc, t0):
+    if exc is None:
         rec = dump(r)
         patch = (getattr(r, 'agent_patch', '') or '').strip()
         (OUT / 'patches' / f'{task.instance_id}.patch').write_text(patch)
         rec.update(instance_id=task.instance_id, repo=task.repo)
-    except Exception as exc:
+    else:
         rec = {'instance_id': task.instance_id, 'repo': task.repo, 'resolved': False,
-               'agent_error': f'{type(exc).__name__}: {exc}', 'traceback': traceback.format_exc()}
+               'agent_error': f'{type(exc).__name__}: {exc}', 'traceback': ''.join(
+                   traceback.format_exception(type(exc), exc, exc.__traceback__))}
+    rec.setdefault('tool_calls_used', rec.get('tool_calls'))
     rec['wall_seconds'] = round(time.time() - t0, 1)
     rows.append(rec)
+    done[0] += 1
     with open(OUT / 'kernel_results.jsonl', 'a') as f:
         f.write(json.dumps(rec, default=str) + '\n')
-    print(f'[{i}/{len(tasks)}] {task.instance_id} resolved={rec.get("resolved")} '
-          f'calls={rec.get("tool_calls", rec.get("tool_calls_used"))} '
-          f'wall={rec["wall_seconds"]}s err={str(rec.get("agent_error") or rec.get("error") or "")[:200]}',
-          flush=True)
+    if done[0] == 1:
+        print('record keys:', sorted(rec.keys()), flush=True)
+    print(f'[{done[0]}/{len(tasks)}] {task.instance_id} resolved={rec.get("resolved")} '
+          f'calls={rec.get("tool_calls_used")} wall={rec["wall_seconds"]}s '
+          f'err={str(rec.get("agent_error") or rec.get("error") or "")[:200]}', flush=True)
+
+
+async def one(sem, i, task):
+    async with sem:
+        t0 = time.time()
+        try:
+            r = await evaluator.evaluate_task(task=task, task_index=i, total_tasks=len(tasks))
+            record(i, task, r, None, t0)
+        except Exception as exc:
+            record(i, task, None, exc, t0)
+
+
+async def run_all():
+    sem = asyncio.Semaphore(CONCURRENCY)
+    await asyncio.gather(*(one(sem, i, t) for i, t in enumerate(tasks, 1)))
+
+
+T_EVAL = time.time()
+if inspect.iscoroutinefunction(evaluator.evaluate_task) and CONCURRENCY > 1:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        pool.submit(lambda: asyncio.run(run_all())).result()
+else:
+    import threading
+    lock = threading.Lock()
+
+    def one_sync(i, task):
+        t0 = time.time()
+        try:
+            r = run_sync(evaluator.evaluate_task, task=task, task_index=i, total_tasks=len(tasks))
+            with lock:
+                record(i, task, r, None, t0)
+        except Exception as exc:
+            with lock:
+                record(i, task, None, exc, t0)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, CONCURRENCY)) as pool:
+        list(pool.map(lambda it: one_sync(*it), enumerate(tasks, 1)))
+print(f'eval phase {time.time() - T_EVAL:.0f}s for {len(tasks)} tasks, concurrency={CONCURRENCY}', flush=True)
 
 if server is not None:
     server.stop()
 
-# 5. Smoke checks: did the analyzer emit all seven sections, and did the coder submit?
+# 5. Bucket every task (same rules as scripts/score.py) and write a compact review.
 SECTIONS = ['FAILING_TEST', 'TRACEBACK', 'FILES', 'CODE', 'DIAGNOSIS', 'EDIT_SITES', 'RISK']
-report = {'tag': TAG, 'model': MODEL_NAME, 'tasks': len(rows),
-          'resolved': sum(1 for r in rows if r.get('resolved')), 'per_task': {}}
-for r in rows:
-    tid = r['instance_id']
-    blob = ''
+TOOLS_RE = re.compile(r'(code_analyzer|run_command|read_file|edit_file|write_file|search_similar_code|'
+                      r'get_code_neighbors|get_code_subgraph|submit_patch|get_status)')
+MAX_CALLS = int(ev.get('max_tool_calls', 28))
+
+
+def blob_for(tid):
+    b = ''
     for p in OUT.rglob('*'):
-        if p.is_file() and tid in p.name and p.suffix in {'.json', '.log', '.txt', '.jsonl'}:
-            blob += p.read_text(errors='replace')
-    report['per_task'][tid] = {
-        'resolved': r.get('resolved'),
-        'sections_found': [s for s in SECTIONS if f'### {s}' in blob],
-        'analyzer_called': 'code_analyzer' in blob,
-        'submit_patch_called': 'submit_patch' in blob,
-        'patch_chars': len((OUT / 'patches' / f'{tid}.patch').read_text())
-        if (OUT / 'patches' / f'{tid}.patch').exists() else 0,
-    }
-(OUT / 'kernel_report.json').write_text(json.dumps(report, indent=2))
-print(json.dumps(report, indent=2))
-print('files in results:', sorted(str(p.relative_to(OUT)) for p in OUT.rglob('*') if p.is_file())[:50])
+        if p.is_file() and tid in p.name and p.suffix in {'.json', '.log', '.txt'} and 'review' not in p.name:
+            b += p.read_text(errors='replace') + '\n'
+    return b
+
+
+def classify(rec):
+    if rec.get('resolved') is True or str(rec.get('resolved')).lower() == 'true':
+        return 'resolved'
+    err = ' '.join(str(rec.get(k) or '') for k in ('error', 'test_error', 'verification_error'))
+    if 'Failed to apply' in err:
+        return 'apply_failed'
+    patch = OUT / 'patches' / f"{rec['instance_id']}.patch"
+    if not patch.exists() or not patch.read_text(errors='replace').strip():
+        return 'no_patch'
+    if 'Timeout' in err or 'timed out' in err.lower():
+        return 'timeout'
+    if (rec.get('tool_calls_used') or 0) >= MAX_CALLS:
+        return 'budget_exhausted'
+    if rec.get('agent_error'):
+        return 'agent_error'
+    tout = str(rec.get('test_output') or rec.get('test_stdout') or '')
+    if 'FAILED' in tout and 'passed' in tout:
+        return 'regression'
+    return 'wrong_fix'
+
+
+from collections import Counter, defaultdict
+counts, per_repo, brows = Counter(), defaultdict(Counter), []
+review = []
+for rec in sorted(rows, key=lambda r: r['instance_id']):
+    tid = rec['instance_id']
+    blob = blob_for(tid)
+    b = classify(rec)
+    counts[b] += 1
+    per_repo[rec.get('repo')][b] += 1
+    calls = TOOLS_RE.findall(blob)
+    brows.append({'id': tid, 'repo': rec.get('repo'), 'bucket': b, 'calls': rec.get('tool_calls_used'),
+                  'wall': rec.get('wall_seconds'), 'sections': sum(f'### {s}' in blob for s in SECTIONS),
+                  'submitted': 'submit_patch' in blob})
+    if b != 'resolved':
+        i = blob.find('### FAILING_TEST')
+        brief = blob[i:i + 1800] if i >= 0 else '(no brief)'
+        patch = OUT / 'patches' / f'{tid}.patch'
+        ptxt = patch.read_text(errors='replace')[:1200] if patch.exists() else ''
+        review.append(f"===== {tid}  bucket={b}  calls={rec.get('tool_calls_used')} wall={rec.get('wall_seconds')}\n"
+                      f"tool sequence: {' '.join(calls[:60])}\n"
+                      f"err: {str(rec.get('agent_error') or rec.get('error') or '')[:400]}\n"
+                      f"--- brief\n{brief}\n--- patch\n{ptxt}\n")
+total = sum(counts.values()) or 1
+(OUT / 'buckets.json').write_text(json.dumps(brows, indent=1))
+(OUT / 'review.txt').write_text('\n'.join(review))
+print(f"\n== {TAG}  ({total} tasks)  resolved {counts['resolved']}/{total} = {counts['resolved'] / total:.1%}")
+for k, v in counts.most_common():
+    print(f'   {k:18} {v:4}  {v / total:5.1%}')
+print('   by repo:', json.dumps({k: dict(v) for k, v in per_repo.items()}))
+print('BUCKETS ' + json.dumps([[r['id'], r['bucket'], r['calls'], r['sections'], int(r['submitted'])] for r in brows]))
+print('files in results:', len([p for p in OUT.rglob('*') if p.is_file()]))
 '''
 
 
@@ -266,14 +360,19 @@ def main() -> None:
     ap.add_argument("--task-ids", nargs="*", default=[])
     ap.add_argument("--skip-agent-patch", action="store_true")
     ap.add_argument("--accelerator", default="NvidiaL4X4")
+    ap.add_argument("--concurrency", type=int, default=4)
+    ap.add_argument("--split", default=None, help="read task ids from data/splits/<split>.txt")
     a = ap.parse_args()
 
+    if a.split:
+        a.task_ids = Path(f"data/splits/{a.split}.txt").read_text().split()
     zpath = Path(a.zip or f"dist/{a.model}.zip")
     b64 = base64.b64encode(zpath.read_bytes()).decode()
     src = (TEMPLATE.replace("__TAG__", repr(a.tag))
            .replace("__MODEL__", repr(MODELS[a.model]))
            .replace("__TASK_IDS__", repr(a.task_ids))
            .replace("__SKIP__", repr(a.skip_agent_patch))
+           .replace("__CONC__", repr(a.concurrency))
            .replace("__ZIP__", repr(b64)))
 
     slug = f"gemma-agent-{a.tag}".lower().replace("_", "-")
@@ -297,6 +396,11 @@ def main() -> None:
         else [f"google/gemma-4/other/{MODELS[a.model]}/2"],
     }
     (out / "kernel-metadata.json").write_text(json.dumps(meta, indent=2) + "\n")
+    nb = {"cells": [{"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [],
+                     "source": src.splitlines(True)}],
+          "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}},
+          "nbformat": 4, "nbformat_minor": 5}
+    (out / f"{slug}.ipynb").write_text(json.dumps(nb), encoding="utf-8")
     print(f"wrote {out}/run.py ({len(src)} chars) and kernel-metadata.json  id={meta['id']}")
 
 
