@@ -238,7 +238,7 @@ def record(i, task, r, exc, t0):
         print('record keys:', sorted(rec.keys()), flush=True)
     print(f'[{done[0]}/{len(tasks)}] {task.instance_id} resolved={rec.get("resolved")} '
           f'calls={rec.get("tool_calls_used")} wall={rec["wall_seconds"]}s '
-          f'err={str(rec.get("agent_error") or rec.get("error") or "")[:200]}', flush=True)
+          f'err={str(rec.get("agent_error") or rec.get("error_message") or rec.get("error") or "")[:200]}', flush=True)
 
 
 async def one(sem, i, task):
@@ -299,7 +299,7 @@ def blob_for(tid):
 def classify(rec):
     if rec.get('resolved') is True or str(rec.get('resolved')).lower() == 'true':
         return 'resolved'
-    err = ' '.join(str(rec.get(k) or '') for k in ('error', 'test_error', 'verification_error'))
+    err = ' '.join(str(rec.get(k) or '') for k in ('error', 'error_message', 'status', 'test_error', 'verification_error'))
     if 'Failed to apply' in err:
         return 'apply_failed'
     patch = OUT / 'patches' / f"{rec['instance_id']}.patch"
@@ -337,7 +337,8 @@ for rec in sorted(rows, key=lambda r: r['instance_id']):
         ptxt = patch.read_text(errors='replace')[:1200] if patch.exists() else ''
         review.append(f"===== {tid}  bucket={b}  calls={rec.get('tool_calls_used')} wall={rec.get('wall_seconds')}\n"
                       f"tool sequence: {' '.join(calls[:60])}\n"
-                      f"err: {str(rec.get('agent_error') or rec.get('error') or '')[:400]}\n"
+                      f"err: {str(rec.get('agent_error') or rec.get('error_message') or rec.get('error') or '')[:400]}\n"
+                      f"test tail: {str(rec.get('test_output') or '')[-700:]}\n"
                       f"--- brief\n{brief}\n--- patch\n{ptxt}\n")
 total = sum(counts.values()) or 1
 (OUT / 'buckets.json').write_text(json.dumps(brows, indent=1))

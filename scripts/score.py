@@ -39,7 +39,7 @@ def classify(rec: dict, out: Path) -> str:
     tid = rec["instance_id"]
     if rec.get("resolved"):
         return "resolved"
-    err = rec.get("error") or ""
+    err = " ".join(str(rec.get(k) or "") for k in ("error", "error_message", "status"))
     if "Failed to apply" in err:
         return "apply_failed"
     patch = out / "patches" / f"{tid}.patch"
