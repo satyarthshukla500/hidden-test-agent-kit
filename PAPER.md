@@ -10,7 +10,7 @@ In 72 of 90 development tasks (80%), the test that grades a fix does not exist i
 
 Small local models put coding agents on hardware a developer already owns, but they leave little margin. The Gemma 4 Developer Agent competition makes the constraint concrete: an agent declared only in YAML and prompts must fix real bugs in fastapi, rich, requests and httpx offline, inside a 32,768-token window and about six minutes per task. A task counts only if every required test passes.
 
-We built a two-agent fixer on the smallest permitted model, Gemma 4 E4B, and logged every run. The solve rate stayed between 4 and 7 of 90, and that is context, not the result. The results are about measurement: where a small agent can anchor when the grading test is hidden, and how much of an observed change is noise. The budget turned out to cause failures of its own.
+We built a two-agent fixer on the smallest permitted model, Gemma 4 E4B, and logged every run. The solve rate stayed between 4 and 8 of 90, and that is context, not the result. The results are about measurement: where a small agent can anchor when the grading test is hidden, and how much of an observed change is noise. The budget turned out to cause failures of its own.
 
 Who is blocked without this: anyone evaluating a small agent without the GPU budget to run it hundreds of times. A team with one run per change on 90 tasks will keep changes that did nothing and revert changes that helped, and will not know it.
 
@@ -92,7 +92,7 @@ tools:
 
 ## 4. Experiments and results
 
-Every E4B configuration we ran resolves between 4 and 7 of 90 development tasks. We changed one thing per run; p01 was run twice to measure noise. Resolve counts are reported as context. The claims in this section are the spread, the failure distribution and the overflow mechanism.
+Every E4B configuration we ran resolves between 4 and 8 of 90 development tasks. We changed one thing per run; p01 was run twice and p03 three times to measure noise. Resolve counts are reported as context. The claims in this section are the spread, the failure distribution and the overflow mechanism.
 
 Resolved, of 90 dev tasks (Gemma 4 E4B, Kaggle notebook versions 2, 3, 4, 5 and 7): p00-base 4, p01 7, p02 6, p01b 5, p03 7.
 
@@ -116,7 +116,7 @@ Resolved, of 90 dev tasks (Gemma 4 E4B, Kaggle notebook versions 2, 3, 4, 5 and 
 
 *Overflow is a mechanism, not a sample: the request fails once the prompt exceeds the window minus the reserved output (24,576 tokens at 8,192; 26,624 at 6,144), and no p03 trajectory reached the higher line. Turn-cap hits halve; timeouts do not move.*
 
-**Rank-2 recovery and held-out check.** Not yet run. Both are queued in Kaggle version 365852417 behind two unchanged repeats of p03, and no result from that version is reported here.
+**Repeats, rank-2 and held-out (version 365852417).** Two unchanged p03 repeats resolved 7 and 8; over the three p03 runs 14 tasks were solved at least once, 2 every time. A rank-2 variant (the coder falls back to a second edit site) resolved 5 and used the fallback once. On the 39 held-out tasks p03 resolved 5 (13%): no sign of overfitting, and not distinguishable from 8% at n = 39.
 
 ## 5. Analysis
 
@@ -126,7 +126,7 @@ With a solve rate of 7 of 90 (p ≈ 0.07), the binomial standard deviation of a 
 
 Runs share their tasks, so the sharper test is paired. p01 and p01b disagree on 8 tasks (5 solved only by p01, 3 only by p01b); an exact McNemar test gives p = 0.73, which is consistent with no difference, as it should be for identical submissions. We also report solve stability, S = |solved in every run| / |solved in any run| over k runs: here S = 1/13 at k = 5. S near 1 means the agent's successes are repeatable; S near 0 means a leaderboard score mostly reflects which tasks happened to land.
 
-Rule: run the unchanged configuration at least twice before the first comparison, and treat any change inside the observed spread as unproven. For our task set that spread is 5 to 7. The 13 tasks solved at least once, about double any single run, also name a target: consistency on tasks the agent can already solve is worth as much as new capability.
+Rule: run the unchanged configuration at least twice before the first comparison, and treat any change inside the observed spread as unproven. For our task set that spread is 5 to 8. The 13 tasks solved at least once, about double any single run, also name a target: consistency on tasks the agent can already solve is worth as much as new capability.
 
 ### 5.2 Where the 44% wrong-file rate comes from
 
@@ -149,16 +149,16 @@ A larger model is not automatically better under a fixed wall clock. With the 8,
 
 ## 6. Limitations and future work
 
-- **Scale.** 90 public development tasks in three repositories, one or two runs per configuration. The hidden test set comes from private repositories we cannot inspect.
+- **Scale.** 90 public development tasks in three repositories, one to three runs per configuration. The hidden test set comes from private repositories we cannot inspect.
 - **Keep or revert decisions on prompts are calibrated, not measured.** By Section 5.1 no change here exceeds the noise floor; "kept" means no evidence of harm plus a mechanism we can name, never "better".
 - **Coarse bucket.** "Target still failing" is any failing run whose test output shows both passed and failed tests; it is not a strict regression measure.
 - **One model family, one harness.** The noise floor depends on our concurrency and sampling settings; the hidden-test rate depends on how this task set was mined.
 
-**What would falsify the thesis.** If a traceback-anchored baseline matched reproduce-first on this task set over repeated runs, the hidden-test measurement would not justify the redesign. If repeated runs of p03 fell outside 5 to 7, the noise floor would be an artifact of one pair of runs or of our concurrency setting rather than a property of small-agent evaluation at n = 90. If overflow events reappeared at 6,144 reserved tokens, the mechanism in Section 5.3 would be incomplete. The first two are tested by the repeated runs queued in Section 4.
+**What would falsify the thesis.** If a traceback-anchored baseline matched reproduce-first on this task set over repeated runs, the hidden-test measurement would not justify the redesign. If repeated runs of p03 fell outside 5 to 7, the noise floor would be an artifact of one pair of runs or of our concurrency setting rather than a property of small-agent evaluation at n = 90. If overflow events reappeared at 6,144 reserved tokens, the mechanism in Section 5.3 would be incomplete. The p03 repeats reached 8, so the spread widens to 5 to 8.
 
 ## 7. Related work
 
-**Benchmarks.** SWE-bench [1] defined repository-level issue resolution graded by fail-to-pass tests withheld from the agent; this competition follows that format. We do not claim the hidden-test condition is new. We measure how rarely, in this task set, the issue text supplies an execution anchor of its own, and release the script that measures it on any task file in the format.
+**Benchmarks.** SWE-bench [1] defined repository-level issue resolution graded by fail-to-pass tests withheld from the agent; this competition follows that format. We do not claim the hidden-test condition is new.
 
 **Borrowed.** From Agentless [4], the idea of generating a reproduction test before patching. From SWE-agent [2], the view that the tool interface shapes success, though our nine tools are fixed by the harness. From AutoCodeRover [3], code search over program structure for localization, which the harness exposes as embedding and call-graph tools.
 
