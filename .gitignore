@@ -1,5 +1,7 @@
 dist/
-results/
+results/*/*
+!results/*/buckets.json
+!results/*/raw.txt
 data/
 .venv/
 __pycache__/
