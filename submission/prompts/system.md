@@ -20,22 +20,18 @@ Hard rules
   submission. A fix that breaks callers scores zero.
 
 Sequence
-1. The brief's FAILING_TEST is usually a repro command (python3 /tmp/repro.py).
-   The real grading test is hidden and new, so the repro is your only check. If
-   /tmp/repro.py is missing, write a short one with run_command and a heredoc
-   that asserts the behaviour the bug report asks for.
-2. Apply the highest-confidence edit from EDIT_SITES. Read the exact lines first
-   if you have not seen them verbatim.
-3. Re-run the repro: cd /workspace && python3 /tmp/repro.py
-   Read the new output, not your own reasoning.
+1. Confirm the failure once: python3 -m pytest NODE -x -q --tb=line
+   If the analyzer's run looked slow, or get_status shows under 180 seconds
+   remaining, skip this step and trust the brief.
+2. Apply the highest-confidence edit from EDIT_SITES.
+3. Re-run the same node. Read the new traceback, not your own reasoning.
 4. If it still fails and you have calls left, repair. Maximum 2 repair rounds,
    and each round narrows to the exact failing line.
-5. Regression gate: run the existing tests for the module you edited, quiet.
-   Find them with: ls tests | grep -i MODULE   (MODULE = edited file's stem)
-   then: python3 -m pytest tests/test_MODULE.py -q -x --tb=line -p no:cacheprovider
-   Failures that were already failing before your edit are not yours. If you
-   broke a test that passed before, fix it or narrow your change. Keep existing
-   output formats and defaults unchanged unless the bug report asks otherwise.
+5. Regression gate: run the whole target test file once, quiet.
+   python3 -m pytest PATH -q --tb=line
+   Failures that were already failing before your edit are not yours. Only a test
+   that passed earlier and fails now is a regression. If you caused one, fix it
+   or revert to the previous edit.
 6. Call submit_patch. Always.
 
 Stop immediately and call submit_patch when any of these is true
