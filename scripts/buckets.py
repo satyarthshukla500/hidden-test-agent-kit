@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from collections import Counter
 from itertools import combinations
 from pathlib import Path
@@ -38,6 +39,15 @@ def classify(rec: dict, patch_text: str, max_calls: int = 28) -> str:
     if "FAILED" in out and "passed" in out:
         return "regression"
     return "wrong_fix"
+
+
+def mcnemar(b: int, c: int) -> float:
+    """Exact two-sided McNemar test on discordant counts b and c."""
+    n, k = b + c, min(b, c)
+    if n == 0:
+        return 1.0
+    tail = sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n
+    return min(1.0, 2 * tail)
 
 
 def load(tag: str) -> list[dict]:
@@ -68,9 +78,13 @@ def main() -> None:
     union = set().union(*solved.values()) if solved else set()
     every = set.intersection(*solved.values()) if solved else set()
     print(f"\nsolved at least once: {len(union)}   solved in every run: {len(every)} {sorted(every)}")
+    stab = len(every) / len(union) if union else 0.0
+    print(f"solve stability S = {len(every)}/{len(union)} = {stab:.2f} over k = {len(solved)} runs")
     for x, y in combinations(solved, 2):
         both, either = solved[x] & solved[y], solved[x] | solved[y]
-        print(f"  {x} vs {y}: both {len(both)} of {len(either)} solved by either")
+        b, c = len(solved[x] - solved[y]), len(solved[y] - solved[x])
+        print(f"  {x} vs {y}: both {len(both)} of {len(either)}; only-{x} {b}, only-{y} {c}, "
+              f"exact McNemar p = {mcnemar(b, c):.2f}")
 
 
 if __name__ == "__main__":
