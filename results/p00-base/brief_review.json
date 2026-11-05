@@ -1,0 +1,394 @@
+[
+ {
+  "id": "fastapi_11194",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_11355",
+  "failing_test": "NO_TEST",
+  "patched": [],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "empty"
+ },
+ {
+  "id": "fastapi_12942",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_13207",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/_compat/v2.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_13537",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_13920",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14099",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "docs_src/dependencies/tutorial013_an_py310.py",
+   "docs_src/dependencies/tutorial014_an_py310.py",
+   "fastapi/applications.py",
+   "fastapi/middleware/asyncexitstack.py",
+   "fastapi/routing.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14186",
+  "failing_test": "template_echo",
+  "patched": [
+   "fastapi/_compat/v1.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat/__init__.py",
+   "fastapi/_compat/main.py",
+   "fastapi/_compat/may_v1.py",
+   "fastapi/_compat/shared.py",
+   "fastapi/_compat/v1.py",
+   "fastapi/_compat/v2.py",
+   "fastapi/dependencies/utils.py",
+   "fastapi/encoders.py",
+   "fastapi/temp_pydantic_v1_params.py",
+   "fastapi/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14246",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/_compat/main.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14258",
+  "failing_test": "NO_TEST",
+  "patched": [],
+  "gold_files": [
+   "fastapi/routing.py"
+  ],
+  "outcome": "empty"
+ },
+ {
+  "id": "fastapi_14262",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/params.py"
+  ],
+  "gold_files": [
+   "docs_src/dependencies/tutorial008e.py",
+   "docs_src/dependencies/tutorial008e_an.py",
+   "docs_src/dependencies/tutorial008e_an_py39.py",
+   "fastapi/dependencies/models.py",
+   "fastapi/dependencies/utils.py",
+   "fastapi/exceptions.py",
+   "fastapi/param_functions.py",
+   "fastapi/params.py",
+   "fastapi/routing.py",
+   "fastapi/types.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14266",
+  "failing_test": "test_named",
+  "patched": [
+   "fastapi/applications.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14297",
+  "failing_test": "test_named",
+  "patched": [],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "empty"
+ },
+ {
+  "id": "fastapi_14303",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14306",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/exceptions.py"
+  ],
+  "gold_files": [
+   "fastapi/exceptions.py",
+   "fastapi/routing.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14349",
+  "failing_test": "NO_TEST",
+  "patched": [],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "empty"
+ },
+ {
+  "id": "fastapi_14361",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/_compat/shared.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14430",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14458",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/models.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/models.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14459",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/models.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/models.py",
+   "fastapi/dependencies/utils.py",
+   "fastapi/openapi/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14463",
+  "failing_test": "NO_TEST",
+  "patched": [],
+  "gold_files": [
+   "fastapi/openapi/utils.py"
+  ],
+  "outcome": "empty"
+ },
+ {
+  "id": "fastapi_14482",
+  "failing_test": "test_named",
+  "patched": [
+   "fastapi/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14487",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/exceptions.py"
+  ],
+  "gold_files": [
+   "docs_src/handling_errors/tutorial004.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14512",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/temp_pydantic_v1_params.py"
+  ],
+  "gold_files": [
+   "fastapi/_compat/v2.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14583",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/_compat/v1.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py",
+   "fastapi/routing.py"
+  ],
+  "outcome": "wrong_file"
+ },
+ {
+  "id": "fastapi_14605",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py",
+   "fastapi/exceptions.py",
+   "fastapi/openapi/utils.py",
+   "fastapi/params.py",
+   "fastapi/routing.py",
+   "fastapi/temp_pydantic_v1_params.py",
+   "fastapi/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14609",
+  "failing_test": "test_named",
+  "patched": [
+   "fastapi/utils.py"
+  ],
+  "gold_files": [
+   "docs_src/request_form_models/tutorial002_pv1_an_py39.py",
+   "docs_src/request_form_models/tutorial002_pv1_py39.py",
+   "fastapi/_compat/__init__.py",
+   "fastapi/_compat/main.py",
+   "fastapi/_compat/may_v1.py",
+   "fastapi/_compat/model_field.py",
+   "fastapi/_compat/shared.py",
+   "fastapi/_compat/v1.py",
+   "fastapi/_compat/v2.py",
+   "fastapi/datastructures.py",
+   "fastapi/dependencies/utils.py",
+   "fastapi/encoders.py",
+   "fastapi/exceptions.py",
+   "fastapi/openapi/models.py",
+   "fastapi/openapi/utils.py",
+   "fastapi/param_functions.py",
+   "fastapi/params.py",
+   "fastapi/routing.py",
+   "fastapi/temp_pydantic_v1_params.py",
+   "fastapi/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14616",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14791",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/openapi/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/openapi/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14794",
+  "failing_test": "NO_TEST",
+  "patched": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "gold_files": [
+   "fastapi/dependencies/utils.py"
+  ],
+  "outcome": "right_file"
+ },
+ {
+  "id": "fastapi_14851",
+  "failing_test": "NO_TEST",
+  "patched": [],
+  "gold_files": [
+   "fastapi/routing.py"
+  ],
+  "outcome": "empty"
+ },
+ {
+  "id": "fastapi_14953",
+  "failing_test": "test_named",
+  "patched": [],
+  "gold_files": [
+   "docs_src/json_base64_bytes/tutorial001_py310.py",
+   "fastapi/_compat/v2.py",
+   "fastapi/datastructures.py",
+   "scripts/playwright/json_base64_bytes/image01.py"
+  ],
+  "outcome": "empty"
+ }
+]

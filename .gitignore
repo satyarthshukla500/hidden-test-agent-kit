@@ -2,6 +2,7 @@ dist/
 results/*/*
 !results/*/buckets.json
 !results/*/raw.txt
+!results/*/brief_review.json
 data/
 .venv/
 __pycache__/
