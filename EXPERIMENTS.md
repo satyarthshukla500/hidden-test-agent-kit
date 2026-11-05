@@ -13,6 +13,9 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | p01-12b | 365819874 | p01 on 12B | 0/12 | stopped. every task hit a limit |
 | p03 | 365825150 | output 6144, thinking 2048 | 7/90 | overflow 12 to 0. kept |
 | p04 | 365848731 | temperature 0 | - | stopped at 10 min |
-| night2 | 365852417 | p03 x2, rank-2, held-out 39 | pending | |
+| p03b | 365852417 | p03 again, unchanged | 7/90 | night2 job 1 |
+| p03c | 365852417 | p03 again, unchanged | 8/90 | night2 job 2. p03 x3: 14 solved once, 2 every time |
+| p05 | 365852417 | rank-2 fallback in coder | 5/90 | rank reported on 21, fallback used once |
+| heldout-p03 | 365852417 | p03 on the 39 held-out tasks | 5/39 | night2 job 4 |
 
 wf = wrong fix, tsf = target test still failing, empty = no patch.

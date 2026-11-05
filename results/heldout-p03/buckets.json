@@ -1,0 +1,392 @@
+[
+ {
+  "id": "fastapi_13713",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 14,
+  "wall": 151.6,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_13786",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 7,
+  "wall": 100.0,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14077",
+  "repo": "fastapi/fastapi",
+  "bucket": "resolved",
+  "calls": 6,
+  "wall": 117.1,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14301",
+  "repo": "fastapi/fastapi",
+  "bucket": "resolved",
+  "calls": 10,
+  "wall": 103.4,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14356",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 10,
+  "wall": 110.7,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14360",
+  "repo": "fastapi/fastapi",
+  "bucket": "no_patch",
+  "calls": 14,
+  "wall": 132.8,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14371",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 11,
+  "wall": 120.7,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14419",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 9,
+  "wall": 142.6,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14448",
+  "repo": "fastapi/fastapi",
+  "bucket": "regression",
+  "calls": 9,
+  "wall": 67.9,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14455",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 12,
+  "wall": 96.1,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14479",
+  "repo": "fastapi/fastapi",
+  "bucket": "no_patch",
+  "calls": 9,
+  "wall": 95.1,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14485",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 13,
+  "wall": 162.2,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14492",
+  "repo": "fastapi/fastapi",
+  "bucket": "regression",
+  "calls": 7,
+  "wall": 95.9,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14873",
+  "repo": "fastapi/fastapi",
+  "bucket": "regression",
+  "calls": 14,
+  "wall": 268.2,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14964",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 7,
+  "wall": 96.2,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_14986",
+  "repo": "fastapi/fastapi",
+  "bucket": "regression",
+  "calls": 10,
+  "wall": 236.5,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_15030",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 6,
+  "wall": 38.5,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_15589",
+  "repo": "fastapi/fastapi",
+  "bucket": "no_patch",
+  "calls": 9,
+  "wall": 108.0,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_15800",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 21,
+  "wall": 267.7,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "fastapi_9425",
+  "repo": "fastapi/fastapi",
+  "bucket": "resolved",
+  "calls": 8,
+  "wall": 77.4,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "httpx_3672",
+  "repo": "encode/httpx",
+  "bucket": "wrong_fix",
+  "calls": 11,
+  "wall": 85.4,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "requests_6629",
+  "repo": "psf/requests",
+  "bucket": "wrong_fix",
+  "calls": 10,
+  "wall": 252.8,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "requests_7328",
+  "repo": "psf/requests",
+  "bucket": "wrong_fix",
+  "calls": 12,
+  "wall": 377.1,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "requests_7427",
+  "repo": "psf/requests",
+  "bucket": "regression",
+  "calls": 7,
+  "wall": 315.9,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "requests_7502",
+  "repo": "psf/requests",
+  "bucket": "wrong_fix",
+  "calls": 6,
+  "wall": 344.5,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3067",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 18,
+  "wall": 130.1,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3130",
+  "repo": "Textualize/rich",
+  "bucket": "wrong_fix",
+  "calls": 21,
+  "wall": 201.5,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3180",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 14,
+  "wall": 220.0,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3278",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 10,
+  "wall": 111.1,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3296",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 11,
+  "wall": 171.9,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3472",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 9,
+  "wall": 107.7,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3480",
+  "repo": "Textualize/rich",
+  "bucket": "wrong_fix",
+  "calls": 7,
+  "wall": 387.8,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3518",
+  "repo": "Textualize/rich",
+  "bucket": "resolved",
+  "calls": 9,
+  "wall": 104.8,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3521",
+  "repo": "Textualize/rich",
+  "bucket": "wrong_fix",
+  "calls": 5,
+  "wall": 92.3,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3675",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 21,
+  "wall": 273.5,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3676",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 17,
+  "wall": 206.7,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3782",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 15,
+  "wall": 241.9,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3882",
+  "repo": "Textualize/rich",
+  "bucket": "resolved",
+  "calls": 10,
+  "wall": 74.4,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ },
+ {
+  "id": "rich_3944",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 14,
+  "wall": 133.1,
+  "sections": 7,
+  "submitted": true,
+  "rank": null
+ }
+]
