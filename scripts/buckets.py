@@ -20,8 +20,8 @@ ORDER = ["resolved", "wrong_fix", "regression", "no_patch", "apply_failed",
          "timeout", "budget_exhausted", "agent_error"]
 
 
+# same rules as the kernel. "regression" just means the test output has both passed and FAILED
 def classify(rec: dict, patch_text: str, max_calls: int = 28) -> str:
-    """Same rules as the kernel. 'regression' = test output shows both passed and FAILED."""
     if str(rec.get("resolved")).lower() == "true":
         return "resolved"
     err = " ".join(str(rec.get(k) or "") for k in ("error", "error_message", "status"))
@@ -41,8 +41,8 @@ def classify(rec: dict, patch_text: str, max_calls: int = 28) -> str:
     return "wrong_fix"
 
 
+# exact two-sided mcnemar on the discordant counts
 def mcnemar(b: int, c: int) -> float:
-    """Exact two-sided McNemar test on discordant counts b and c."""
     n, k = b + c, min(b, c)
     if n == 0:
         return 1.0
