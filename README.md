@@ -22,6 +22,7 @@ of the solve rate (about 300). Python 3.10+, standard library only.
 
 | Artifact | Enables a reader to |
 |---|---|
+| `scripts/task_properties.py` | Measure the hidden-test condition (new-only test patches, tracebacks, files per fix) on any SWE-bench-format task file |
 | `scripts/make_splits.py` (seed 1234, repo-stratified) | Recreate the 90/39 dev/held-out split exactly from `tasks.jsonl` |
 | `scripts/buckets.py` | Classify any run into failure buckets and measure overlap between runs |
 | `scripts/noise_floor.py` | Compute the SD, interval and required n for a target effect on their own solve rate |

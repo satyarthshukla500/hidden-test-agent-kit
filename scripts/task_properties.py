@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Measure the hidden-test condition on any SWE-bench-format task file.
+
+For each task: does the grading test patch only ADD test functions (so the graded
+test does not exist before the fix)? Does the issue text carry a traceback or a code
+block? How many files does the reference fix touch? Standard library only.
+
+  python scripts/task_properties.py data/tasks.jsonl --split data/splits/dev.txt
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import re
+from pathlib import Path
+
+ADD = re.compile(r"^\+\s*(?:async\s+)?def (test_\w+)", re.M)
+DEL = re.compile(r"^-\s*(?:async\s+)?def (test_\w+)", re.M)
+FILES = re.compile(r"^\+\+\+ b/(\S+)", re.M)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("tasks")
+    ap.add_argument("--split", help="file of instance ids to keep")
+    a = ap.parse_args()
+
+    recs = [json.loads(l) for l in Path(a.tasks).read_text(encoding="utf-8").splitlines() if l.strip()]
+    if a.split:
+        keep = set(Path(a.split).read_text().split())
+        recs = [r for r in recs if r["instance_id"] in keep]
+    n = len(recs)
+    new_only = sum(1 for r in recs if ADD.search(r["test_patch"]) and not DEL.search(r["test_patch"]))
+    tb = sum(1 for r in recs if "Traceback" in r["problem_statement"])
+    code = sum(1 for r in recs if "```" in r["problem_statement"])
+    nfiles = [len(set(FILES.findall(r["patch"]))) for r in recs]
+    one = sum(1 for k in nfiles if k == 1)
+    three = sum(1 for k in nfiles if k >= 3)
+    lens = sorted(len(r["problem_statement"]) for r in recs)
+    rows = [("grading test patch only adds new test functions", new_only),
+            ("bug report contains a Python traceback", tb),
+            ("bug report contains a code block", code),
+            ("reference fix touches one file", one),
+            ("reference fix touches three or more files", three)]
+    print(f"{n} tasks, median report length {lens[n // 2]} chars")
+    for label, k in rows:
+        print(f"  {label:50} {k:4}  {k / n:5.0%}")
+
+
+if __name__ == "__main__":
+    main()
