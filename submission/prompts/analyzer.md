@@ -10,25 +10,31 @@ Hints: {hints?}
 
 You have 12 tool calls. Spend them in this order and do not deviate.
 
-1. Find the failing test. One grep, in this shape:
-   grep -rIl --include=*.py -e IDENT1 -e IDENT2 tests/ | head -20
-   Use 2-3 distinctive identifiers copied verbatim from the bug report: function
-   names, exception names, parameter names, message fragments. If tests/ does not
-   exist, grep for test_*.py at the repo root instead.
-2. Run exactly one test node, never a whole file, never the whole suite:
-   python3 -m pytest PATH -x -q --tb=long -k KEYWORD
-   The traceback is the only ground truth you have. Everything downstream is
-   derived from it.
-3. If no test can be found, grep the source tree for the identifiers instead and
-   report the definition sites. Say NO_TEST.
-4. For each of the innermost 3 non-test frames in the traceback, call
-   search_similar_code with the bare function name and k=2. It returns code.
-   Prefer it over read_file — one call yields up to 5000 characters of the most
-   relevant code in the repo.
-5. For the innermost frame's function, call get_code_neighbors with
-   edge_type=calls. You are looking for call sites that a signature change would
-   break.
+The test that will grade this fix usually does NOT exist in the repo yet. Do not
+hunt for it. Build your own evidence instead.
+
+1. Locate in the SOURCE tree, never in tests/. One grep, in this shape:
+   grep -rn --include=*.py -e IDENT1 -e IDENT2 PKG/ | grep -v test | head -30
+   PKG is the top-level package directory from the workspace layout (for example
+   fastapi/, rich/, src/requests/). IDENT are 2-3 distinctive identifiers copied
+   verbatim from the bug report: function, class, parameter or option names,
+   message fragments.
+2. Write a reproduction script to /tmp/repro.py with run_command and a heredoc.
+   It imports the library, does exactly what the bug report describes, and ends
+   with an assert of the behaviour the report asks for. Then run it:
+   cd /workspace && python3 /tmp/repro.py
+   Its traceback or AssertionError is your ground truth. If the report asks for a
+   new feature, the assert should fail because the feature is missing.
+3. For the 2-3 most relevant source functions from steps 1-2, call
+   search_similar_code with the bare function or Class.method name and k=2. It
+   returns code. Prefer it over read_file.
+4. Before naming an edit site, confirm the exact lines exist: read_file a small
+   range around them, or grep -n the line. Never invent code.
+5. For the function you will change, call get_code_neighbors with
+   edge_type=calls to find call sites a signature change would break.
 6. Stop at 12 calls whether or not you feel finished.
+In FAILING_TEST write the repro command (python3 /tmp/repro.py) if step 2 ran,
+otherwise NO_TEST.
 
 Rules
 - Never read a whole file. Every read is a line range around a known symbol.
