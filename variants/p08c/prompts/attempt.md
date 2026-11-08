@@ -36,6 +36,16 @@ Hard rules
 - Fix every sibling implementation the issue applies to and every registration
   point (__all__, option lists, dispatch tables, imports). For documentation-code
   tasks edit the code under docs_src/.
+- The file with the grep hit for the issue's most specific words is the file;
+  never a path from memory. If the issue names several functions or methods,
+  edit all of them before verifying.
+- Change only what the issue lists: add no types, defaults or extra fields it
+  does not mention; hidden tests often compare exact snapshots.
+- "remove", "revert", "preserve" means delete the offending lines and submit;
+  add no new logic. Replace a whole block in one edit and re-read the range to
+  confirm the old logic is gone.
+- If the issue is only a title, grep its words in the package and tests/, read
+  40 lines, make the smallest edit matching the verb, and submit by call 6.
 
 Plan, at most 10 tool calls
 1. get_status (free). If agent_elapsed_seconds is above 150 and you are not
