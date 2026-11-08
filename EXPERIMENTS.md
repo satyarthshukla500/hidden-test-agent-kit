@@ -27,7 +27,7 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | s04 | 366973438 | s03 + spec contract, sibling coverage, registration, no graph tools, edit by call 12 | 8/90 | wf 47, rg 28, np 7. edits ok 151 / fail 88. eval 3512 s |
 | p09 | 366973438 | p07 + the same recipe | 4/90 | wf 44, rg 34, np 8. edits ok 88 / fail 64, no edit 20. eval 4046 s |
 | p08bsmoke | 367059960 | loop of 3 single-agent attempts (no analyzer), layout listing first, site rotation, 6 min, 40 calls, 60 turns, no new attempt after 150 s, last attempt keeps its edit, finisher never resets | 5/20 | edits 30 ok / 11 fail, no edit 2, mean wall 138 s, 1 timeout. eval 760 s |
-| p08csmoke | pending | p08b + baseline-aware verifier (compile, test file not worse, probe) + task rules from the trace decode | pending | cal5, 20 tasks |
-| p08b | pending | p08b on the 90 dev tasks | pending | cal6 |
+| p08csmoke | 367063648 | p08b + baseline-aware verifier (compile, test file not worse, probe) + task rules from the trace decode | 5/20 | edits 47 ok / 20 fail, no edit 1, mean wall 208 s, 2 timeouts, 2 call-budget exhausted. eval 1157 s |
+| p08b | not run | p08b on the 90 dev tasks | - | no gpu time left this week |
 
 wf = wrong fix, tsf = target test still failing, empty = no patch.
