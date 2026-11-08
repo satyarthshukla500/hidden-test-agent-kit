@@ -20,11 +20,11 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | s01 | 366917009 | official sample prompts on e4b, no adapters, sample budget (1 min, 10 calls) | 5/90 | no_patch 49. eval 1454 s |
 | s02 | 366917009 | sample prompts, our budget and sampling | 8/90 | wf 44, rg 28, np 10. eval 3250 s |
 | p06 | 366917009 | p03, coder applies the edit before any test run | 4/90 | wf 36, rg 35, np 15. worse: edits from the brief, not from the file |
-| p07 | pending | anchors only from read_file, never resend a failed anchor, line-number fallback, analyzer must use tools | pending | cal2 job 1 |
-| s03 | pending | sample prompts, our budget, same edit rules as p07 | pending | cal2 job 2 |
-| heldout-p07 | pending | p07 on the 39 held-out tasks | pending | cal2 job 3 |
-| p08smoke | pending | best-of-3 verified attempts (SequentialAgent + LoopAgent), 7 min, 40 calls, 20 tasks | pending | cal3 job 1 |
-| s04 | pending | s03 + spec contract, sibling coverage, registration, no graph tools, edit by call 12 | pending | cal3 job 2 |
-| p09 | pending | p07 + the same recipe | pending | cal3 job 3 |
+| p07 | 366966580 | anchors only from read_file, never resend a failed anchor, line-number fallback, analyzer must use tools | 3/90 | wf 46, rg 28, np 13. edits 93 ok / 79 fail, no edit 23, analyzer no tools 21. worse than p03 |
+| s03 | 366966580 | sample prompts, our budget, same edit rules as p07 | 8/90 | wf 43, rg 23, np 16. edits 119 ok / 50 fail |
+| heldout-p07 | 366966580 | p07 on the 39 held-out tasks | 3/39 | |
+| p08smoke | 366973438 | best-of-3 verified attempts (SequentialAgent + LoopAgent), 7 min, 40 calls, 20 tasks | 3/20 | edits ok 14 / fail 48, no edit 8, analyzer no tools 7 of 20. eval 767 s |
+| s04 | 366973438 | s03 + spec contract, sibling coverage, registration, no graph tools, edit by call 12 | 8/90 | wf 47, rg 28, np 7. edits ok 151 / fail 88. eval 3512 s |
+| p09 | 366973438 | p07 + the same recipe | 4/90 | wf 44, rg 34, np 8. edits ok 88 / fail 64, no edit 20. eval 4046 s |
 
 wf = wrong fix, tsf = target test still failing, empty = no patch.
