@@ -17,9 +17,9 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | p03c | 365852417 | p03 again, unchanged | 8/90 | night2 job 2. p03 x3: 14 solved once, 2 every time |
 | p05 | 365852417 | rank-2 fallback in coder | 5/90 | rank reported on 21, fallback used once |
 | heldout-p03 | 365852417 | p03 on the 39 held-out tasks | 5/39 | night2 job 4 |
-| s01 | v10 | official sample prompts on e4b, no adapters, sample budget (1 min, 10 calls) | pending | cal1 job 1 |
-| s02 | v10 | sample prompts, our budget and sampling | pending | cal1 job 2 |
-| p06 | v10 | p03, coder applies the edit before any test run | pending | cal1 job 3 |
+| s01 | 366917009 | official sample prompts on e4b, no adapters, sample budget (1 min, 10 calls) | 5/90 | no_patch 49. eval 1454 s |
+| s02 | 366917009 | sample prompts, our budget and sampling | 8/90 | wf 44, rg 28, np 10. eval 3250 s |
+| p06 | 366917009 | p03, coder applies the edit before any test run | 4/90 | wf 36, rg 35, np 15. worse: edits from the brief, not from the file |
 | p07 | pending | anchors only from read_file, never resend a failed anchor, line-number fallback, analyzer must use tools | pending | cal2 job 1 |
 | s03 | pending | sample prompts, our budget, same edit rules as p07 | pending | cal2 job 2 |
 | heldout-p07 | pending | p07 on the 39 held-out tasks | pending | cal2 job 3 |
