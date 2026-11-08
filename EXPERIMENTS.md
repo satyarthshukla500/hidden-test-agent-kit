@@ -21,6 +21,7 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | s02 | v10 | sample prompts, our budget and sampling | pending | cal1 job 2 |
 | p06 | v10 | p03, coder applies the edit before any test run | pending | cal1 job 3 |
 | p07 | pending | anchors only from read_file, never resend a failed anchor, line-number fallback, analyzer must use tools | pending | cal2 job 1 |
-| heldout-p07 | pending | p07 on the 39 held-out tasks | pending | cal2 job 2 |
+| s03 | pending | sample prompts, our budget, same edit rules as p07 | pending | cal2 job 2 |
+| heldout-p07 | pending | p07 on the 39 held-out tasks | pending | cal2 job 3 |
 
 wf = wrong fix, tsf = target test still failing, empty = no patch.

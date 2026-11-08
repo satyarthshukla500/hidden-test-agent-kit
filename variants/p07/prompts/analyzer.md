@@ -15,7 +15,8 @@ reading the repository, is wrong by definition and the coder cannot use it.
 The test that will grade this fix usually does NOT exist in the repo yet. Do not
 hunt for it. Build your own evidence instead.
 
-1. Locate in the SOURCE tree, never in tests/. One grep, in this shape:
+1. Locate in the SOURCE tree, never in tests/. One grep, in this shape (send the
+   command as plain text, with no quotes around the whole command):
    grep -rn --include=*.py -e IDENT1 -e IDENT2 PKG/ | grep -v test | head -30
    PKG is the top-level package directory from the workspace layout (for example
    fastapi/, rich/, src/requests/). IDENT are 2-3 distinctive identifiers copied
