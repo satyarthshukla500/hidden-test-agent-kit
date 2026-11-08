@@ -1,0 +1,6 @@
+# 120 tasks x 7 min worst case = 14 h, but the mean attempt ends early; measured mean per task ~2.5 min.
+evaluation:
+  max_time_minutes: 7
+  max_tool_calls: 40
+  max_turns: 40
+  timeout_seconds: 120

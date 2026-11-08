@@ -1,0 +1,7 @@
+name: bugfixer_pipeline
+agent_class: SequentialAgent
+description: Analyze once, then up to three independent verified fix attempts, then a last-resort finisher.
+sub_agents:
+  - config_path: sub_agents/code_analyzer.yaml
+  - config_path: sub_agents/attempts.yaml
+  - config_path: sub_agents/finisher.yaml

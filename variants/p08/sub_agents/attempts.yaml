@@ -1,0 +1,6 @@
+name: attempts
+agent_class: LoopAgent
+description: Up to three independent fix attempts. An attempt that passes its checks submits the patch, which ends the task.
+max_iterations: 3
+sub_agents:
+  - config_path: attempt.yaml

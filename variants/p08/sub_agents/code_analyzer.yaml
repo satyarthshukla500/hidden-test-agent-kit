@@ -1,0 +1,14 @@
+name: code_analyzer
+agent_class: LlmAgent
+model: gemma-4-e4b-it-qat-w4a16-ct
+description: Read-only code analyst. Writes the bug brief into session state.
+instruction: !include ../prompts/analyzer.md
+output_key: bug_brief
+include_contents: none
+generate_content_config: !include ../configs/sampling.yaml
+tools:
+  - run_command
+  - search_similar_code
+  - get_code_neighbors
+  - get_code_subgraph
+  - read_file

@@ -26,7 +26,7 @@ MODELS = {
 ALLOWED_EXT = {".yaml", ".yml", ".md", ".txt", ".py", ".json", ".safetensors"}
 ROOT_NAMES = {"agent.yaml", "agent.yml", "root_agent.yaml", "root_agent.yml"}
 SIZE_CAP = 3 * 1024**3 - 1
-PLACEHOLDERS = {"problem_description", "hints", "bug_brief"}
+PLACEHOLDERS = {"problem_description", "hints", "bug_brief", "last_attempt"}
 MODEL_RE = re.compile(r"^\s*model:\s*(\S+)\s*$", re.M)
 
 
