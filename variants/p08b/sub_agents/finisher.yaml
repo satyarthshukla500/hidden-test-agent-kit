@@ -1,0 +1,13 @@
+name: finisher
+agent_class: LlmAgent
+model: gemma-4-e4b-it-qat-w4a16-ct
+description: Last resort when no attempt verified. Submits the most plausible edit.
+instruction: !include ../prompts/finisher.md
+include_contents: none
+generate_content_config: !include ../configs/sampling.yaml
+tools:
+  - run_command
+  - read_file
+  - edit_file
+  - submit_patch
+  - get_status
