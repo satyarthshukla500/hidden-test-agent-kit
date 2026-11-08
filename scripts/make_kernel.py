@@ -296,6 +296,39 @@ def blob_for(tid):
     return b
 
 
+def trace_calls(tid):
+    """Real tool calls from the ATIF trace: [(author, tool, elapsed_s, ok)], plus edit stats."""
+    seq, st = [], {'edit_ok': 0, 'edit_fail': 0, 'an_calls': 0, 'first_edit': None}
+    hits = sorted(OUT.rglob(f'trace_{tid}.json'))
+    if not hits:
+        return seq, st
+    try:
+        steps = json.loads(hits[0].read_text(errors='replace')).get('steps', [])
+    except Exception:
+        return seq, st
+    for s in steps:
+        obs = s.get('observation') or {}
+        c = obs.get('content') if isinstance(obs, dict) else obs
+        c = c if isinstance(c, str) else json.dumps(c or '')
+        try:
+            ok = json.loads(c).get('status', 'ok') == 'ok'
+        except Exception:
+            ok = '"status": "error"' not in c[:200]
+        for tc in s.get('tool_calls') or []:
+            name = tc.get('function_name') or '?'
+            ex = tc.get('extra') or {}
+            author = str(ex.get('author') or '')[:1]
+            t = float(ex.get('elapsed_s') or 0)
+            seq.append((author, name, round(t), ok))
+            if author == 'c':
+                st['an_calls'] += 1
+            if name == 'edit_file' and author != 'c':
+                st['edit_ok' if ok else 'edit_fail'] += 1
+                if ok and st['first_edit'] is None:
+                    st['first_edit'] = round(t)
+    return seq, st
+
+
 def classify(rec):
     if rec.get('resolved') is True or str(rec.get('resolved')).lower() == 'true':
         return 'resolved'
@@ -327,9 +360,11 @@ for rec in sorted(rows, key=lambda r: r['instance_id']):
     counts[b] += 1
     per_repo[rec.get('repo')][b] += 1
     calls = TOOLS_RE.findall(blob)
+    seq, st = trace_calls(tid)
+    calls = [f"{a}:{n}@{t}{'' if ok else '!'}" for a, n, t, ok in seq]
     brows.append({'id': tid, 'repo': rec.get('repo'), 'bucket': b, 'calls': rec.get('tool_calls_used'),
                   'wall': rec.get('wall_seconds'), 'sections': sum(f'### {s}' in blob for s in SECTIONS),
-                  'submitted': 'submit_patch' in blob})
+                  'submitted': any(n == 'submit_patch' for _, n, _, _ in seq), **st})
     if b != 'resolved':
         i = blob.find('### FAILING_TEST')
         brief = blob[i:i + 1800] if i >= 0 else '(no brief)'
@@ -348,6 +383,9 @@ for k, v in counts.most_common():
     print(f'   {k:18} {v:4}  {v / total:5.1%}')
 print('   by repo:', json.dumps({k: dict(v) for k, v in per_repo.items()}))
 print('BUCKETS ' + json.dumps([[r['id'], r['bucket'], r['calls'], r['sections'], int(r['submitted'])] for r in brows]))
+print(f"EDITS ok={sum(r['edit_ok'] for r in brows)} fail={sum(r['edit_fail'] for r in brows)} "
+      f"tasks_no_edit={sum(r['edit_ok'] == 0 for r in brows)} analyzer_no_tools={sum(r['an_calls'] == 0 for r in brows)} "
+      f"first_edit_median={sorted(r['first_edit'] for r in brows if r['first_edit'] is not None)[len([r for r in brows if r['first_edit'] is not None]) // 2] if any(r['first_edit'] is not None for r in brows) else None}")
 print('files in results:', len([p for p in OUT.rglob('*') if p.is_file()]))
 '''
 
