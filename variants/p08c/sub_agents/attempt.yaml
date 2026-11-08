@@ -1,0 +1,14 @@
+name: attempt
+agent_class: LlmAgent
+model: gemma-4-e4b-it-qat-w4a16-ct
+description: One independent fix attempt with a fresh context.
+instruction: !include ../prompts/attempt.md
+include_contents: none
+output_key: last_attempt
+generate_content_config: !include ../configs/attempt_sampling.yaml
+tools:
+  - run_command
+  - read_file
+  - edit_file
+  - submit_patch
+  - get_status

@@ -1,0 +1,7 @@
+# Scorer runs ~120 tasks one after another inside 12 h: 120 x mean wall must stay under 9 h.
+# Attempts stop starting after 150 s, so a failing task ends around 4 min.
+evaluation:
+  max_time_minutes: 6
+  max_tool_calls: 40
+  max_turns: 60
+  timeout_seconds: 90
