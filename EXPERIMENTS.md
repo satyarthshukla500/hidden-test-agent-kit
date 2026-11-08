@@ -23,5 +23,8 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | p07 | pending | anchors only from read_file, never resend a failed anchor, line-number fallback, analyzer must use tools | pending | cal2 job 1 |
 | s03 | pending | sample prompts, our budget, same edit rules as p07 | pending | cal2 job 2 |
 | heldout-p07 | pending | p07 on the 39 held-out tasks | pending | cal2 job 3 |
+| p08smoke | pending | best-of-3 verified attempts (SequentialAgent + LoopAgent), 7 min, 40 calls, 20 tasks | pending | cal3 job 1 |
+| s04 | pending | s03 + spec contract, sibling coverage, registration, no graph tools, edit by call 12 | pending | cal3 job 2 |
+| p09 | pending | p07 + the same recipe | pending | cal3 job 3 |
 
 wf = wrong fix, tsf = target test still failing, empty = no patch.
