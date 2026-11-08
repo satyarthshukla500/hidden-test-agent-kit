@@ -1,0 +1,17 @@
+name: code_analyzer
+agent_class: LlmAgent
+model: gemma-4-e4b-it-qat-w4a16-ct
+description: >-
+  Read-only code analyst. Locates the failing test, captures the traceback, and
+  returns a structured bug brief with verbatim code and exact edit sites. Call
+  this first on every task, before touching any file.
+instruction: !include ../prompts/analyzer.md
+output_key: bug_brief
+include_contents: none
+generate_content_config: !include ../configs/sampling.yaml
+tools:
+  - run_command
+  - search_similar_code
+  - get_code_neighbors
+  - get_code_subgraph
+  - read_file

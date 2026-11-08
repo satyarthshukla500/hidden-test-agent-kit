@@ -17,5 +17,10 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | p03c | 365852417 | p03 again, unchanged | 8/90 | night2 job 2. p03 x3: 14 solved once, 2 every time |
 | p05 | 365852417 | rank-2 fallback in coder | 5/90 | rank reported on 21, fallback used once |
 | heldout-p03 | 365852417 | p03 on the 39 held-out tasks | 5/39 | night2 job 4 |
+| s01 | v10 | official sample prompts on e4b, no adapters, sample budget (1 min, 10 calls) | pending | cal1 job 1 |
+| s02 | v10 | sample prompts, our budget and sampling | pending | cal1 job 2 |
+| p06 | v10 | p03, coder applies the edit before any test run | pending | cal1 job 3 |
+| p07 | pending | anchors only from read_file, never resend a failed anchor, line-number fallback, analyzer must use tools | pending | cal2 job 1 |
+| heldout-p07 | pending | p07 on the 39 held-out tasks | pending | cal2 job 2 |
 
 wf = wrong fix, tsf = target test still failing, empty = no patch.

@@ -1,0 +1,7 @@
+# 120 tasks x 5 min = 10h of agent time inside a 12h wall.
+# The 300s default command timeout is too generous; a hung pytest eats a task.
+evaluation:
+  max_time_minutes: 5
+  max_tool_calls: 28
+  max_turns: 24
+  timeout_seconds: 150
