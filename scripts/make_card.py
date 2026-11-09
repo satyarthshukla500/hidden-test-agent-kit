@@ -20,25 +20,31 @@ fig = plt.figure(figsize=(5.6, 2.8), dpi=200)
 fig.patch.set_facecolor(BG)
 ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, 560); ax.set_ylim(0, 280); ax.axis("off")
 
-ax.text(28, 262, "No Test to Anchor On", fontsize=11, fontweight="bold", color=FG, ha="left", va="center")
-ax.text(532, 262, "Gemma 4 E4B  |  15 runs  |  309 traced tasks  |  MIT kit", fontsize=7.5, color=DIM, ha="right", va="center")
+# top band
+ax.text(28, 250, "No Test to Anchor On", fontsize=19, fontweight="bold", color=FG, ha="left", va="center")
+ax.text(28, 222, "What 15 runs of a Gemma 4 E4B bug-fixing agent show: hidden tests, failed edits, noise", fontsize=8.4, color=DIM, ha="left", va="center")
 
-ax.text(26, 196, "72", fontsize=46, fontweight="bold", color=ACC, ha="left", va="center", family="DejaVu Sans")
-ax.text(126, 208, "of 90 tasks hide the test", fontsize=15, color=FG, ha="left", va="center", fontweight="bold")
-ax.text(126, 184, "the agent would need to run.", fontsize=15, color=FG, ha="left", va="center", fontweight="bold")
-ax.text(28, 150, "A Gemma 4 E4B agent has no failing test to run. We measured the result:", fontsize=10, color=DIM, ha="left", va="center")
-ax.text(28, 131, "15 runs, 12 designs, all solved 3 to 8 of 90. The differences are noise.", fontsize=10, color=DIM, ha="left", va="center")
+# middle band, left: the hook (this is what the gallery and the thumbnail show)
+ax.text(26, 156, "72", fontsize=34, fontweight="bold", color=ACC, ha="left", va="center", family="DejaVu Sans")
+ax.text(92, 168, "of 90", fontsize=18, fontweight="bold", color=ACC, ha="left", va="center")
+ax.text(92, 143, "tasks hide the test", fontsize=11.5, fontweight="bold", color=FG, ha="left", va="center")
+ax.text(26, 114, "the agent would need to run.", fontsize=11.5, fontweight="bold", color=FG, ha="left", va="center")
 
-# strip of 15 runs
-x0, x1, y0, k = 28, 532, 40, 7.2
+# middle band, right: 15 runs
+x0, x1, y0, k = 300, 532, 112, 8.6
 w = (x1 - x0) / len(solved)
 ax.add_patch(FancyBboxPatch((x0 - 4, y0 + 3 * k - 2), x1 - x0 + 8, 5 * k + 4, boxstyle="round,pad=0,rounding_size=3",
                             fc="#1a2440", ec="none", alpha=0.9, zorder=1))
 for i, s in enumerate(solved):
     col = ACC2 if RUNS[i].startswith("s") else "#8b9bd1"
-    ax.add_patch(plt.Rectangle((x0 + i * w + 4, y0), w - 8, s * k, fc=col, ec="none", zorder=2))
-    ax.text(x0 + i * w + w / 2, y0 + s * k + 2, str(s), fontsize=7, color=FG, ha="center", va="bottom", zorder=3)
-ax.text(x0, y0 - 14, "resolved of 90 per run   |   shaded band = the 3 to 8 noise floor   |   blue = official sample prompt", fontsize=7, color=DIM, ha="left", va="center")
+    ax.add_patch(plt.Rectangle((x0 + i * w + 2, y0), w - 4, s * k, fc=col, ec="none", zorder=2))
+ax.text(x0, y0 + 8 * k + 12, "15 runs, 12 designs, all 3 to 8 of 90", fontsize=8.4, color=FG, ha="left", va="center", fontweight="bold")
+ax.text(x0, y0 - 11, "resolved of 90 per run; blue = official sample prompt", fontsize=6.6, color=DIM, ha="left", va="center")
+
+# bottom band
+ax.text(28, 62, "A Gemma 4 E4B agent has no failing test to run, so the differences between", fontsize=9.5, color=DIM, ha="left", va="center")
+ax.text(28, 45, "designs are noise. We measured the condition, the edits and the floor.", fontsize=9.5, color=DIM, ha="left", va="center")
+ax.text(28, 20, "Gemma 4 E4B  |  15 runs  |  309 traced tasks  |  code, prompts and per-task results, MIT", fontsize=7.5, color=DIM, ha="left", va="center")
 
 out = Path("assets/card.png"); out.parent.mkdir(exist_ok=True)
 fig.savefig(out, dpi=200, facecolor=BG)
