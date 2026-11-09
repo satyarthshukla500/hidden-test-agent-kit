@@ -69,7 +69,7 @@ No configuration left the band of 3 to 8 solved tasks out of 90. p-runs are the 
 
 *Figure 2. Resolved tasks for every full run (of 90), two held-out runs (of 39) and three 20-task smokes.*
 
-On the public leaderboard of 58 hidden tasks p03 scored 0.06 and s01 and s04 0.03, read as 4 and 2 of 58. s02, s03 and s04 each scored 8 of 90 and the three p03 repeats 7, 7 and 8 (Fisher p = 1.0); p07's 3 against the pooled p03 repeats' 22 of 270 gives p = 0.15, unproven by the Section 5.1 rule. s03 and s04 carried a broken `split("\n")` example (a raw newline inside the quotes), so their edit rules were not exactly p07's.
+On the public leaderboard of 58 hidden tasks p03 scored 0.06 and s01 and s04 0.03, read as 4 and 2 of 58. s02, s03 and s04 each scored 8 of 90 and the three p03 repeats 7, 7 and 8 (any single-run pair, Fisher p = 1.0; pooled 24 vs 22 of 270, p = 0.88); p07's 3 against the pooled p03 repeats' 22 of 270 gives p = 0.15, unproven by the Section 5.1 rule. s03 and s04 carried a broken `split("\n")` example (a raw newline inside the quotes), so their edit rules were not exactly p07's.
 
 Unresolved tasks fall into three buckets: wrong fix (patch applied, graded tests fail), target still failing (patch applied, other tests pass, graded test fails) and no patch (empty diff); Figure 3 gives the counts per run.
 
