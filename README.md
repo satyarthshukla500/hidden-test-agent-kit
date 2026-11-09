@@ -12,7 +12,7 @@ Every experiment, prompt and decision is logged in `EXPERIMENTS.md` and `NOTES.m
 
 - `submission/` the p03 agent as first submitted: `agent.yaml`, `sub_agents/code_analyzer.yaml`, prompts, sampling and budget config
 - `prompts/reproduce_first.md` the analyzer prompt on its own
-- `variants/` every other configuration we ran: `sample-e4b` (official sample prompt, s01), `sample-e4b-budget` (s02), `s03`, `s04`, `p06`, `p07`, `p09`, the retry loops `p08`, `p08b`, `p08c`, and the rank-2 and 12B probes
+- `variants/` every other configuration we ran: `sample-e4b` (official sample prompt, s01), `sample-e4b-budget` (s02), `s03`, `s04`, `p06`, `p07`, `p09`, the retry loops `p08`, `p08b`, `p08c`, `rank2` (the analyzer ranks two edit sites, p05) and `12b-probe` (a 12-task look at Gemma 4 12B)
 - `scripts/` split, bucketing, noise floor, task properties, edit-anchor decode (`edit_decode.py`), figures (`make_figures.py`), build and Kaggle kernel generators
 - `results/<tag>/buckets.json` per-task outcome of every run in the paper's tables; `results/<tag>/edits.csv` every `edit_file` call of the 15 decoded runs; `raw.txt` (four early runs) the compact line the notebook printed, task / bucket / tool calls, from which buckets.json was built; `brief_review.json` (p00-base) whether the analyzer's brief pointed at the file the reference fix touched
 - `data/splits/` the dev and held-out task ids (the competition data itself is not redistributed)
@@ -44,7 +44,7 @@ and import the generated `kaggle/p03/gemma-agent-p03.ipynb` into the fork (`kagg
 
 - `resolved` all required tests pass
 - `wrong_fix` a patch was applied and the target test fails
-- `regression` test output has both passed and FAILED. mostly the target still failing, not a true regression
+- `regression` the patch applied and the test output has both passed and FAILED lines; in practice the graded test still fails while others pass, so the paper calls this bucket "target still failing"
 - `no_patch` empty diff
 - `apply_failed`, `timeout`, `budget_exhausted`, `agent_error` as named. Only `budget_exhausted` occurred: 2 tasks in s01 and 2 in the p08c smoke
 

@@ -10,7 +10,7 @@ The official sample prompt, run under our budget, was one of the 12 configuratio
 
 ## 1. Introduction
 
-Most writeups for this competition change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper reports what 15 runs of Gemma 4 E4B, the smallest permitted model, show when read together.
+Most writeups for this competition change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper reports what 15 runs of Gemma 4 E4B show when read together.
 
 The setting is the Gemma 4 Developer Agent competition: an agent declared only in YAML and Markdown prompts must fix real bugs in fastapi, rich and requests, offline, inside a 32,768-token window and about five minutes per task. We counted how often a task supplies a failing test or traceback the agent can run.
 
@@ -36,13 +36,13 @@ We split the 129 public tasks by repository into 90 development and 39 held-out 
 | Report names an *Error or *Exception class | 10 of 90 |
 | Reference fix touches one file / three or more | 65 / 13 of 90 |
 
-At least 20 of the 90 development tasks are ungradable in the offline sandbox (14 import `inline_snapshot`, 1 `dirty_equals`, 5 grade through `tests/test_requests.py`, which errors at collection); none of the 20 was ever solved, the local denominator for rates is 70, and the host states that private scoring is unaffected [10].
+At least 20 of the 90 development tasks are ungradable in the offline sandbox (14 import `inline_snapshot`, 1 `dirty_equals`, 5 grade through `tests/test_requests.py`, which errors at collection); none of the 20 was ever solved, the local denominator for rates is 70, and the host states that private scoring is unaffected [8].
 
 ![Ungradable tasks](figures/fig5_sandbox.png)
 
 *Figure 1. The 20 of 90 development tasks the offline sandbox never grades; none was ever solved.*
 
-**Budget.** About 120 hidden tasks must finish inside a 12-hour wall that includes model start-up (366 s on our first run) and grading. We set 5 minutes, 28 tool calls, 24 turns and a 150-second command timeout per task.
+**Budget.** About 120 hidden tasks must finish inside a 12-hour wall that includes model start-up and grading. We set 5 minutes, 28 tool calls, 24 turns and a 150-second command timeout per task.
 
 ## 3. Method
 
@@ -98,7 +98,7 @@ Rule: state a difference as two counts with a p-value; treat it as unproven when
 
 ### 5.2 Where edit anchors come from
 
-`scripts/edit_decode.py` reads the traces of p03b, p03c, p05 and held-out p03 (309 tasks). The coder called `edit_file` 658 times: 350 landed, 308 failed, the failures being 243 "old_string not found", 25 "occurs N times", 21 wrong path, 8 budget and 11 other. For the 243, where had the anchor text appeared in what the coder had seen? 92 matched text in the brief (88 exactly, 4 up to whitespace), 29 a file window the coder had read, 12 the coder's own earlier text, 7 only analyzer output the coder never saw, 2 shell or search output, and 101 matched nothing in the brief, the file windows the coder had read or any tool output, exactly or with spaces collapsed; the decode does not see the coder's own earlier edit arguments, so some of the 101 may be near-misses rather than inventions. File windows are tested before the brief, so 92 is a lower bound. Counts are per call: 45 of the 308 failures resent an anchor already rejected.
+`scripts/edit_decode.py` reads the traces of p03b, p03c, p05 and held-out p03 (309 tasks). The coder called `edit_file` 658 times: 350 landed, 308 failed, the failures being 243 "old_string not found", 25 "occurs N times", 21 wrong path, 8 budget and 11 other (5 with identical old and new text). For the 243, where had the anchor text appeared in what the coder had seen? 92 matched text in the brief (88 exactly, 4 up to whitespace), 29 a file window the coder had read, 12 the coder's own earlier text, 7 only analyzer output the coder never saw, 2 shell or search output, and 101 matched nothing in the brief, the file windows the coder had read or any tool output, exactly or with spaces collapsed; the decode does not see the coder's own earlier edit arguments, so some of the 101 may be near-misses rather than inventions. File windows are tested before the brief, so 92 is a lower bound. Counts are per call: 45 of the 308 failures resent an anchor already rejected.
 
 The brief's `CODE` section is the analyzer's paraphrase, and the design relies on it as the anchor source. The analyzer wrote 33 of 309 briefs without any tool call; 5 of those tasks resolved against 20 of the other 276 (p = 0.16), so a brief written without reading the code did not by itself cost resolutions. In the sample-prompt runs, which have no brief, most missing anchors matched nothing the agent had received (s02 40 of 51, s04 51 of 68).
 
@@ -108,7 +108,7 @@ The brief's `CODE` section is the analyzer's paraphrase, and the design relies o
 
 ### 5.3 What landed edits became
 
-Landing rates from the decode: briefed runs 53% pooled (350 of 658 over p03b, p03c, p05 and held-out p03; per run 47% to 60%), 59% (p06, 118 of 199), 54% (p07, 93 of 172); sample-prompt runs 64% (s02, 119 of 187, no edit rules), 69% (s03, 117 of 169), 62% (s04, 149 of 239). The rules moved landing within a family by at most five points (sample +5 and -2, p = 0.31, 0.84; p07 +1, p = 0.86; p06, an ordering change, +6, p = 0.14); the gap is between families (p = 6e-5). p07, which also changed the analyzer and added a line-number fallback outside `edit_file`, is the obvious repair for Section 5.2's missing anchors; it landed 54% of its `edit_file` calls and solved 3. Pooled over three runs each: no-patch 33 vs 51 of 270 (p = 0.043), wrong fix 134 vs 112 (p = 0.069), resolved 24 vs 22 (p = 0.88). Only the no-patch contrast clears the Section 5.1 rule: the sample prompt more often produced some patch, not more often the right one.
+Landing rates from the decode: briefed runs 53% pooled (350 of 658 over p03b, p03c, p05 and held-out p03; per run 47% to 60%), 59% (p06, 118 of 199), 54% (p07, 93 of 172), 45% (held-out p07, 28 of 62); sample-prompt runs 64% (s02, 119 of 187, no edit rules), 69% (s03, 117 of 169), 62% (s04, 149 of 239). The rules moved landing within a family by at most five points (sample +5 and -2, p = 0.31, 0.84; p07 +1, p = 0.86; p06, an ordering change, +6, p = 0.14); the gap is between families (350 of 658 vs 385 of 595, p = 4e-5). p07, which also changed the analyzer and added a line-number fallback outside `edit_file`, is the obvious repair for Section 5.2's missing anchors; it landed 54% of its `edit_file` calls and solved 3. Pooled over three runs each: no-patch 33 vs 51 of 270 (p = 0.043), wrong fix 134 vs 112 (p = 0.069), resolved 24 vs 22 (p = 0.88). Only the no-patch contrast clears the Section 5.1 rule: the sample prompt more often produced some patch, not more often the right one.
 
 ### 5.4 The output reservation
 
@@ -122,7 +122,7 @@ Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and th
 
 ## 7. What we wrote down, and what happened
 
-We committed the falsification clauses at 15:28 on 2026-11-05 (a0fa0c9), with the repeat runs described there as queued and none of their results in the paper; the results were committed 16 minutes later (3a223bb). The repository does not show whether the Kaggle output was visible to us before 15:28. The clauses said p03 repeats outside 5 to 7 would void the noise floor: the third repeat scored 8, one task outside, and the pooled spread of repeated configurations is 5 to 8. They said a traceback-anchored baseline matching reproduce-first over repeated runs would void the redesign: we ran the official sample prompt in four variants, none repeated; s02 scored 8 of 90 and matched, so the design claim rests on weaker evidence than we specified. They said overflow reappearing at 6,144 reserved tokens would mean the mechanism was incomplete: the p03b log shows none; p03c's limit events were not recorded.
+We committed the falsification clauses at 15:28 on 2026-11-05 (a0fa0c9), with the repeat runs described there as queued and none of their results in the paper; the results were committed 16 minutes later (3a223bb). NOTES.md records that batch as running at 11:16 and lasting 3 h 40 min, so its output existed before 15:28; whether we had read it, the repository cannot show. The clauses said p03 repeats outside 5 to 7 would void the noise floor: the third repeat scored 8, one task outside, and the pooled spread of repeated configurations is 5 to 8. They said a traceback-anchored baseline matching reproduce-first over repeated runs would void the redesign: we ran the official sample prompt in four variants, none repeated; s02 scored 8 of 90 and matched, so the design claim rests on weaker evidence than we specified. They said overflow reappearing at 6,144 reserved tokens would mean the mechanism was incomplete: the p03b log shows none; p03c's limit events were not recorded.
 
 ## 8. Limitations
 
@@ -130,11 +130,11 @@ Ninety public tasks in three repositories, one to three runs per configuration, 
 
 ## 9. Related work
 
-The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda's pre-registered study [6] (3 sizes, 2 scaffolds, 5 seeds) is the best-powered E4B result we know of. Gluzdov [8] reports E4B editing the wrong file in 13 of 31 tasks; Thakur [9] reports one 31B configuration scoring 55 then 48. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the count: nobody we read counted whether the grading test pre-exists.
+The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda's pre-registered study [6] is the best-powered E4B result we know of. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the count: nobody we read counted whether the grading test pre-exists.
 
 ## 10. Reproducibility
 
-Code, prompts, configs, the experiment log and per-task files are at [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); the traces behind Section 5.2 are in the Kaggle dataset `voidwalkers123/gemma-agent-results-night2`. `results/<run>/edits.csv` holds run, task, lines, result, origin and file for every decoded edit call in the 15 decoded runs; the resend count and the per-task analyzer tally come from the traces in the Kaggle dataset and are not in the repository. Scripts (Python 3.10, standard library; matplotlib for figures): `make_splits.py`, `task_properties.py`, `buckets.py`, `noise_floor.py`, `edit_decode.py`, `make_figures.py`. Per-task bucket files exist for every run in Figure 2; notebook versions and commands are in EXPERIMENTS.md.
+Code, prompts, configs, the experiment log and per-task files are at [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); the traces behind Section 5.2 are in the Kaggle dataset `voidwalkers123/gemma-agent-results-night2`. `results/<run>/edits.csv` holds run, task, lines, result, origin and file for every decoded edit call in the 15 decoded runs; the resend count and the per-task analyzer tally come from the traces in the Kaggle dataset and are not in the repository. Scripts: `make_splits.py`, `task_properties.py`, `buckets.py`, `noise_floor.py`, `edit_decode.py`, `make_figures.py`. Per-task bucket files exist for every run in Figure 2; notebook versions and commands are in EXPERIMENTS.md.
 
 ## References
 
@@ -145,6 +145,4 @@ Code, prompts, configs, the experiment log and per-task files are at [github.com
 5. Sweep. Lessons from building a coding agent for JetBrains. https://blog.sweep.dev/posts/jetbrains-coding-agent
 6. T. Toeda. Scaffolding Helps the Smallest Gemma 4 Agent, Not the Larger Ones. Zenodo, 2026. https://zenodo.org/records/23834104
 7. J. Zha. When Coding Agents Repeat: Persistence, Selection, and the Limits of Loop Breaking. 2026. https://github.com/usp787/Gemma4_paper_track
-8. D. Gluzdov. 31B vs 12B vs E4B with the same agent files. Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent/discussion/750974
-9. A. Thakur. Gemma 4 agent experiments: sampling, thinking, time limits, and tool ablations. Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent/discussion/746250
-10. J. Wold. 27 fastapi tasks that fail at collection in the provided sandbox (host reply: private scoring excludes these tasks). Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
+8. J. Wold. 27 fastapi tasks that fail at collection in the provided sandbox (host reply: private scoring excludes these tasks). Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
