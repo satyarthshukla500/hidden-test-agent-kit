@@ -17,6 +17,7 @@ is normalised (runs of spaces/tabs collapse, CRLF dropped) in a second pass.
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import re
 import sys
@@ -94,6 +95,7 @@ def main(argv: list[str]) -> None:
     if not traces:
         sys.exit("no trace_*.json under " + ", ".join(map(str, roots)))
     rows: list[dict] = []
+    tasks: list[dict] = []
     for p in traces:
         tid = p.name[len("trace_"):-5]
         run = p.parent.parent.name if p.parent.name == "traces" else p.parent.name
@@ -102,11 +104,14 @@ def main(argv: list[str]) -> None:
         except Exception:
             continue
         seen = {s: "" for s in SOURCES}
+        an_calls = 0
+        last_failed_anchor = None  # sha1 of the previous failed edit's old_string in this task
         for s in steps:
             text, od = decode(raw_content(s))
             calls = s.get("tool_calls") or []
             tools = [tc.get("function_name") or "?" for tc in calls]
             authors = [str((tc.get("extra") or {}).get("author") or "") for tc in calls]
+            an_calls += sum(1 for a in authors if a == "code_analyzer")
             for tc, tool, author in zip(calls, tools, authors):
                 if tool != "edit_file" or author == "code_analyzer":
                     continue
@@ -121,8 +126,12 @@ def main(argv: list[str]) -> None:
                         else "no_such_file" if "not found in sandbox" in em
                         else "budget" if "udget" in em else "other:" + em[:40])
                 origin = locate(old, seen) if kind == "not_found" and old.strip() else ("" if ok else "n/a")
+                h = hashlib.sha1(old.encode("utf-8", "replace")).hexdigest()[:10]
+                resend = int(not ok and last_failed_anchor == h)  # same anchor as the previous failed edit
                 rows.append({"run": run, "task": tid, "lines": old.count("\n") + 1, "result": kind,
-                             "origin": origin, "file": str(args.get("filepath") or "")})
+                             "origin": origin, "file": str(args.get("filepath") or ""),
+                             "anchor": h, "resend": resend})
+                last_failed_anchor = None if ok else h
             # what the coder could have seen after this step. Steps authored by the analyzer
             # sub-agent are invisible to the coder except its final answer, the brief.
             step_author = str((s.get("extra") or {}).get("author") or "")
@@ -135,6 +144,19 @@ def main(argv: list[str]) -> None:
                 blob = (text or "") if tools else (msg or "")
             if blob.strip():
                 seen[src] += "\n" + blob
+        mine = [r for r in rows if r["run"] == run and r["task"] == tid]
+        tasks.append({"run": run, "task": tid, "analyzer_tool_calls": an_calls,
+                      "edit_calls": len(mine), "landed": sum(r["result"] == "ok" for r in mine),
+                      "distinct_anchors": len({r["anchor"] for r in mine})})
+    with Path("tasks.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=["run", "task", "analyzer_tool_calls", "edit_calls", "landed", "distinct_anchors"])
+        w.writeheader()
+        w.writerows(tasks)
+    print("tasks", len(tasks), "| analyzer made no tool call in",
+          sum(t["analyzer_tool_calls"] == 0 for t in tasks), "tasks |",
+          "resends among failed edits:", sum(r["resend"] for r in rows),
+          "| distinct anchors:", len({(r["run"], r["task"], r["anchor"]) for r in rows}),
+          "| distinct missing anchors:", len({(r["run"], r["task"], r["anchor"]) for r in rows if r["result"] == "not_found"}))
     out = Path("edits.csv")
     with out.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
