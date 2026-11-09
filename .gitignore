@@ -8,3 +8,5 @@ data/
 __pycache__/
 *.egg-info/
 kaggle/
+!results/*/edits.csv
+!results/*/tasks.csv
