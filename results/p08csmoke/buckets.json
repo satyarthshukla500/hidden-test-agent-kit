@@ -1,0 +1,122 @@
+[
+ {
+  "id": "fastapi_11194",
+  "repo": "fastapi/fastapi",
+  "bucket": "budget_exhausted",
+  "calls": 40
+ },
+ {
+  "id": "fastapi_13537",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 39
+ },
+ {
+  "id": "fastapi_14099",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 5
+ },
+ {
+  "id": "fastapi_14266",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 17
+ },
+ {
+  "id": "fastapi_14372",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 15
+ },
+ {
+  "id": "fastapi_14786",
+  "repo": "fastapi/fastapi",
+  "bucket": "resolved",
+  "calls": 5
+ },
+ {
+  "id": "fastapi_14794",
+  "repo": "fastapi/fastapi",
+  "bucket": "budget_exhausted",
+  "calls": 40
+ },
+ {
+  "id": "fastapi_15023",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 29
+ },
+ {
+  "id": "fastapi_5077",
+  "repo": "fastapi/fastapi",
+  "bucket": "wrong_fix",
+  "calls": 26
+ },
+ {
+  "id": "requests_6644",
+  "repo": "psf/requests",
+  "bucket": "resolved",
+  "calls": 7
+ },
+ {
+  "id": "requests_7309",
+  "repo": "psf/requests",
+  "bucket": "regression",
+  "calls": 9
+ },
+ {
+  "id": "requests_7505",
+  "repo": "psf/requests",
+  "bucket": "wrong_fix",
+  "calls": 12
+ },
+ {
+  "id": "rich_2725",
+  "repo": "Textualize/rich",
+  "bucket": "resolved",
+  "calls": 40
+ },
+ {
+  "id": "rich_3063",
+  "repo": "Textualize/rich",
+  "bucket": "no_patch",
+  "calls": 14
+ },
+ {
+  "id": "rich_3105",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 10
+ },
+ {
+  "id": "rich_3454",
+  "repo": "Textualize/rich",
+  "bucket": "no_patch",
+  "calls": 21
+ },
+ {
+  "id": "rich_3469",
+  "repo": "Textualize/rich",
+  "bucket": "no_patch",
+  "calls": 24
+ },
+ {
+  "id": "rich_3894",
+  "repo": "Textualize/rich",
+  "bucket": "regression",
+  "calls": 4
+ },
+ {
+  "id": "rich_3905",
+  "repo": "Textualize/rich",
+  "bucket": "resolved",
+  "calls": 8
+ },
+ {
+  "id": "rich_4077",
+  "repo": "Textualize/rich",
+  "bucket": "resolved",
+  "calls": 14
+ }
+]

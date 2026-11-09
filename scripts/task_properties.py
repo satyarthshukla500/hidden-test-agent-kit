@@ -17,6 +17,10 @@ from pathlib import Path
 ADD = re.compile(r"^\+\s*(?:async\s+)?def (test_\w+)", re.M)
 DEL = re.compile(r"^-\s*(?:async\s+)?def (test_\w+)", re.M)
 FILES = re.compile(r"^\+\+\+ b/(\S+)", re.M)
+NEWFILE = re.compile(r"^--- /dev/null", re.M)
+# a removed, non-blank line inside a test file: the grading patch edits a test that exists
+REMOVED = re.compile(r"^-(?!--)\s*\S", re.M)
+ERRNAME = re.compile(r"\b[A-Z]\w+(?:Error|Exception)\b")
 
 
 def main() -> None:
@@ -30,15 +34,27 @@ def main() -> None:
         keep = set(Path(a.split).read_text().split())
         recs = [r for r in recs if r["instance_id"] in keep]
     n = len(recs)
-    new_only = sum(1 for r in recs if ADD.search(r["test_patch"]) and not DEL.search(r["test_patch"]))
+    # counting rule: "adds a new test function" = the test patch has a "+def test_" line and no "-def test_" line
+    adds_new = [r for r in recs if ADD.search(r["test_patch"]) and not DEL.search(r["test_patch"])]
+    new_only = len(adds_new)
+    # of those, how many also remove an existing non-blank line (edit a test that already exists)?
+    also_edits = sum(1 for r in adds_new if REMOVED.search(r["test_patch"]))
+    new_file = sum(1 for r in recs if NEWFILE.search(r["test_patch"]))
     tb = sum(1 for r in recs if "Traceback" in r["problem_statement"])
+    tb_ci = sum(1 for r in recs if "traceback" in r["problem_statement"].lower())
+    errname = sum(1 for r in recs if ERRNAME.search(r["problem_statement"]))
     code = sum(1 for r in recs if "```" in r["problem_statement"])
     nfiles = [len(set(FILES.findall(r["patch"]))) for r in recs]
     one = sum(1 for k in nfiles if k == 1)
     three = sum(1 for k in nfiles if k >= 3)
     lens = sorted(len(r["problem_statement"]) for r in recs)
-    rows = [("grading test patch only adds new test functions", new_only),
-            ("bug report contains a Python traceback", tb),
+    rows = [("grading test patch adds a new test function", new_only),
+            ("  ... and touches no existing test line", new_only - also_edits),
+            ("  ... and also edits an existing test", also_edits),
+            ("grading test patch creates a new test file", new_file),
+            ("bug report contains 'Traceback' (case-sensitive)", tb),
+            ("bug report mentions a traceback (any case)", tb_ci),
+            ("bug report names an *Error/*Exception", errname),
             ("bug report contains a code block", code),
             ("reference fix touches one file", one),
             ("reference fix touches three or more files", three)]
