@@ -3,7 +3,8 @@ results/*/*
 !results/*/buckets.json
 !results/*/raw.txt
 !results/*/brief_review.json
-data/
+data/*
+!data/splits/
 .venv/
 __pycache__/
 *.egg-info/
