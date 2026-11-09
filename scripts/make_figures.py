@@ -110,7 +110,7 @@ def dev_tasks():
 
 
 def ungradable_sets(tasks):
-    """Dev tasks the offline sandbox cannot grade (NOTES.md 2026-11-09, analysis):
+    """Dev tasks the offline sandbox does not grade (NOTES.md 2026-11-09, analysis):
     the wheels cache lacks inline_snapshot and dirty_equals, and tests/test_requests.py
     errors at collection. Derived from the test_patch text."""
     inline, dirty, treq = set(), set(), set()
@@ -195,7 +195,7 @@ def fig2():
     # Landing by anchor length over the 658 calls (re-decode): landed / attempted.
     by_len = [("1 line", 39, 89), ("2 to 8 lines", 243, 410), ("9 or more lines", 68, 159)]
     assert sum(a for _, a, _ in by_len) == ok
-    # NOTE: the attempted counts sum to 669, not 658, as supplied by the re-decode.
+    assert sum(n for _, _, n in by_len) == ok + failed
 
     rows = [
         ("658 edit_file calls", [("landed", ok, GREEN), ("failed", failed, VERMILION)]),
@@ -251,7 +251,7 @@ def fig2():
     ax2.spines["left"].set_visible(False)
     ax2.set_title("landed, by anchor length", fontsize=10.5, fontweight="normal", loc="center")
 
-    fig.text(0.01, 0.99, "Of 243 missing edit anchors, 92 were text from the brief and 101 were text the coder had never read",
+    fig.text(0.01, 0.99, "Of 243 missing edit anchors, 92 matched text in the brief and 101 matched nothing the coder had received",
              ha="left", va="top", fontsize=12.5, fontweight="bold")
     fig.subplots_adjust(left=0.2, top=0.86)
     save(fig, "fig2_edit_failures")
@@ -272,7 +272,7 @@ def fig3():
     # p03 figure is pooled over p03b, p03c, p05 and held-out p03 (350/658).
     landing = {"p03": (350, 658), "p03b": (350, 658), "p03c": (350, 658), "p05": (350, 658),
                "p06": (118, 199), "p07": (93, 172), "s01": (51, 64), "s02": (119, 187),
-               "s03": (117, 169), "s04": (151, 239)}
+               "s03": (117, 169), "s04": (149, 239)}
     pooled = {"p03", "p03b", "p03c", "p05"}
 
     tasks = dev_tasks()
@@ -316,12 +316,12 @@ def fig3():
     ax.tick_params(axis="y", length=0)
     handles = [Patch(color=colors[k], label=names[k]) for k in order]
     handles.append(Patch(facecolor="white", edgecolor="black", hatch="////",
-                         label=f"hatched: {len(ungradable)} tasks the sandbox cannot grade"))
+                         label=f"hatched: {len(ungradable)} tasks the sandbox does not grade"))
     ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.07), ncol=3)
     ax.text(0, -0.2, "* pooled over p03b, p03c, p05 and held-out p03 (350 of 658 edit_file calls)",
             transform=ax.transAxes, fontsize=8.5, color="#555555", va="top")
-    ax.set_title("Landed edits rose from 53% to 69% while resolved stayed at 3 to 8 of 90; "
-                 "the gain moved tasks from no patch to wrong fix", wrap=True)
+    ax.set_title("Sample-prompt runs landed 62-69% of edits, briefed runs 53-59%; "
+                 "resolved stayed at 3 to 8 of 90", wrap=True)
     save(fig, "fig3_funnel")
 
 
@@ -368,18 +368,16 @@ def fig5():
     tasks = dev_tasks()
     inline, dirty_only, treq = ungradable_sets(tasks)
     ungradable = inline | dirty_only | treq
+    # Union over every 90-task run with a buckets.json in results/ (15 runs).
+    full_runs = sorted(p.parent.name for p in (ROOT / "results").glob("*/buckets.json")
+                       if len(json.loads(p.read_text(encoding="utf-8"))) == 90)
     ever_solved = set()
-    for run in DEV_RUNS:
+    for run in full_runs:
         ever_solved |= {x["id"] for x in load_buckets(run) if x["bucket"] == "resolved"}
     assert not (ever_solved & ungradable)
-    # analysis note: p03b patches matching the reference on
-    # ungradable tasks. requests_7315 is listed there too but grades through
-    # tests/test_adapters.py, which is gradable, so it is not marked here.
-    correct_ungraded = {"fastapi_14303", "requests_6592", "requests_7433", "requests_6589"} & ungradable
-    assert len(correct_ungraded) == 4
 
     cats = [
-        ("gradable, solved in at least one run", sorted(ever_solved), BLUE),
+        (f"gradable, solved in at least one of {len(full_runs)} runs", sorted(ever_solved), BLUE),
         ("gradable, never solved", sorted(set(tasks) - ungradable - ever_solved), LIGHT),
         ("test imports inline_snapshot (missing wheel)", sorted(inline), VERMILION),
         ("test imports dirty_equals only (missing wheel)", sorted(dirty_only), ORANGE),
@@ -394,8 +392,6 @@ def fig5():
         for tid in ids:
             r, col = divmod(i, ncol)
             ax.add_patch(Rectangle((col, -r), 0.9, 0.9, color=c))
-            if tid in correct_ungraded:
-                ax.plot(col + 0.45, -r + 0.45, marker="*", color="black", ms=9)
             i += 1
     nrow = -(-90 // ncol)
     ax.set_xlim(-0.2, ncol + 0.1)
@@ -404,12 +400,9 @@ def fig5():
     ax.axis("off")
     gradable = 90 - len(ungradable)
     handles = [Patch(color=c, label=f"{label}: {len(ids)}") for label, ids, c in cats]
-    handles.append(plt.Line2D([], [], marker="*", color="black", ls="", ms=9,
-                              label=f"ungradable, but the p03b patch matched the reference fix: {len(correct_ungraded)}"))
     ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, 1.0), fontsize=9.5)
-    ax.set_title(f"{len(ungradable)} of 90 dev tasks cannot pass in the offline sandbox, and "
-                 f"{len(correct_ungraded)} of them had a patch matching the reference fix; "
-                 f"{gradable} tasks are gradable", wrap=True, pad=14)
+    ax.set_title(f"{len(ungradable)} of 90 dev tasks are not graded in the offline sandbox; "
+                 f"{gradable} are gradable", wrap=True, pad=14)
     save(fig, "fig5_sandbox")
 
 
