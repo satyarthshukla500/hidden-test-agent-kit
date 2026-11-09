@@ -36,7 +36,7 @@ We split the 129 public tasks by repository into 90 development and 39 held-out 
 | Report names an *Error or *Exception class | 10 of 90 |
 | Reference fix touches one file / three or more | 65 / 13 of 90 |
 
-At least 20 of the 90 development tasks are ungradable in the offline sandbox (14 import `inline_snapshot`, 1 `dirty_equals`, 5 grade through `tests/test_requests.py`, which errors at collection); none of the 20 was ever solved, the local denominator for rates is 70, and the host states that private scoring is unaffected [8].
+At least 20 of the 90 development tasks are ungradable in the offline sandbox (14 import `inline_snapshot`, 1 `dirty_equals`, 5 grade through `tests/test_requests.py`, which errors at collection); none of the 20 was ever solved, the local denominator for rates is 70, and the host states that private scoring is unaffected [7].
 
 ![Ungradable tasks](figures/fig5_sandbox.png)
 
@@ -144,5 +144,4 @@ Code, prompts, configs, the experiment log and per-task files are at [github.com
 4. On Randomness in Agentic Evals. arXiv:2602.07150, 2026. https://arxiv.org/abs/2602.07150
 5. Sweep. Lessons from building a coding agent for JetBrains. https://blog.sweep.dev/posts/jetbrains-coding-agent
 6. T. Toeda. Scaffolding Helps the Smallest Gemma 4 Agent, Not the Larger Ones. Zenodo, 2026. https://zenodo.org/records/23834104
-7. J. Zha. When Coding Agents Repeat: Persistence, Selection, and the Limits of Loop Breaking. 2026. https://github.com/usp787/Gemma4_paper_track
-8. J. Wold. 27 fastapi tasks that fail at collection in the provided sandbox (host reply: private scoring excludes these tasks). Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
+7. J. Wold. 27 fastapi tasks that fail at collection in the provided sandbox (host reply: private scoring excludes these tasks). Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
