@@ -271,7 +271,7 @@ def fig3():
     # Edit landing rate (landed / edit_file calls) per run, from the trace re-decode.
     # p03 figure is pooled over p03b, p03c, p05 and held-out p03 (350/658).
     landing = {"p03": (350, 658), "p03b": (350, 658), "p03c": (350, 658), "p05": (350, 658),
-               "p06": (118, 199), "p07": (93, 172), "s01": (51, 64), "s02": (119, 187),
+               "p06": (118, 199), "p07": (93, 172), "s01": (51, 77), "s02": (119, 187),
                "s03": (117, 169), "s04": (149, 239)}
     pooled = {"p03", "p03b", "p03c", "p05"}
 
