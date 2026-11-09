@@ -180,7 +180,7 @@ def fig2():
     ok, failed = 350, 308
     assert ok + failed == 658
     # 308 failures by cause.
-    not_found, nonunique, wrong_path, budget, other = 243, 26, 21, 8, 10
+    not_found, nonunique, wrong_path, budget, other = 243, 25, 21, 8, 11  # results/<run>/edits.csv, p03b+p03c+p05+heldout-p03
     assert not_found + nonunique + wrong_path + budget + other == failed
     # 243 "old_string not found", by where the text had appeared (author-aware).
     where = [
