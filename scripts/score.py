@@ -5,7 +5,7 @@ Each bucket maps to one prompt section you can change:
   no_patch         -> coder stop conditions and submit discipline
   apply_failed     -> the diff did not apply to a fresh copy
   wrong_fix        -> diagnosis and edit-site ranking
-  regression       -> target test still failing while other tests pass
+  regression       -> the test log contains FAILED (the kernel's buckets.py also requires passed)
   timeout          -> budget caps, per-call cost
   budget_exhausted -> phase call caps
   agent_error      -> tool misuse, hallucinated tools
