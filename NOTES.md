@@ -68,4 +68,4 @@ Running log, newest at the bottom. The results table is EXPERIMENTS.md; the find
 
 2026-11-10
 - extended decode (cpu notebook v17, dataset v1 = p03b, p03c, p05, heldout-p03, plus the p08c smoke): edits.csv now carries an anchor hash and a resend flag, tasks.csv the analyzer's tool calls per task. over the four runs: 658 calls, 308 failed, 87 failures repeat the anchor of the failed edit just before them in the task (74 not found, 9 wrong path, 3 occurs-N-times, 1 budget), 105 repeat any earlier failed anchor; the 243 not-found calls are 157 distinct anchors; 524 distinct anchors in all. the earlier '45' counted only a repeat as the very next action. analyzer made no tool call in 33 of 309 tasks; 5 of those resolved, 20 of the other 276.
-- p08b submitted to the public leaderboard; score pending.
+- p08b on the public leaderboard: 0.06 = 4/58, same as p03. a loop of single-agent attempts with no analyzer ties the best two-agent run.

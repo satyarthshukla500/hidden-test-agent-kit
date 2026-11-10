@@ -28,6 +28,6 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | p09 | 366973438 | p07 + the same five rules | 4/90 | wf 44, rg 34, np 8. edits ok 88 / fail 64, no edit 20. eval 4046 s |
 | p08bsmoke | 367059960 | loop of 3 single-agent attempts (no analyzer), layout listing first, site rotation, 6 min, 40 calls, 60 turns, no new attempt after 150 s, last attempt keeps its edit, finisher never resets | 5/20 | edits 30 ok / 11 fail (kernel tally; decode 28/41), no edit 2, mean wall 138 s, 1 timeout. eval 760 s |
 | p08csmoke | 367063648 | p08b + baseline-aware verifier (compile, test file not worse, probe) + task rules from the trace decode | 5/20 | edits 47 ok / 20 fail (kernel tally; decode 41/67), no edit 1, mean wall 208 s, 2 timeouts, 2 call-budget exhausted. eval 1157 s |
-| p08b | not run | p08b on the 90 dev tasks | - | not run yet |
+| p08b | not run | p08b on the 90 dev tasks | - | not run yet; public leaderboard 0.06 (4/58) |
 
 wf = wrong fix, tsf / rg = target test still failing (the `regression` bucket), empty / np = no patch. "kernel tally" is the count printed by the run notebook; "decode" is the count from the traces (results/<tag>/edits.csv). cal1..cal4 and night2 are the overnight batches that ran several tags in one notebook version; the batch has no meaning beyond that.
