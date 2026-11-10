@@ -4,7 +4,7 @@
 
 Gemma 4 E4B is the smallest Gemma 4 model the competition allows; a task is one real bug report from fastapi, rich or requests that the agent must fix offline.
 
-Finding, in one line: in 72 of 90 development tasks the grading test does not exist yet when the agent starts, so a Gemma 4 E4B agent has no failing test to run, and every one of our 15 runs solved 3 to 8 of 90; the rest is noise, measured. The paper is `PAPER.md`.
+Finding, in one line: in 72 of 90 development tasks the grading patch adds a new test the agent never sees, so a Gemma 4 E4B agent has no failing test to run, and every one of our 15 runs solved 3 to 8 of 90; the rest is noise, measured. The paper is `PAPER.md`.
 
 This repo holds the Gemma 4 E4B bug-fixing agents we ran in the Kaggle Gemma 4 Developer Agent competition (a reproduce-first analyzer-then-coder design in `submission/`, the official sample prompt under our budget and its variants, and a retry-loop design) and the small kit used to measure them. It goes with the paper "No Test to Anchor On" (`PAPER.md`). Public leaderboard (58 hidden tasks): p03 0.06, p08b 0.06, s01 0.03, s04 0.03, read as 4, 4, 2 and 2 tasks if the scores are truncated to two decimals.
 

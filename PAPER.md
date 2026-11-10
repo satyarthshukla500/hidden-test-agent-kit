@@ -10,7 +10,7 @@ The official sample prompt, run under our budget, was one of the 12 configuratio
 
 ## 1. Introduction
 
-It is natural to change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper reads 15 runs of Gemma 4 E4B together.
+It is natural to change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper analyses 15 runs of Gemma 4 E4B together.
 
 The setting is the Gemma 4 Developer Agent competition: an agent declared only in YAML and Markdown prompts must fix real bugs in fastapi, rich and requests, offline, inside a 32,768-token window and about five minutes per task. We counted how often a task supplies a failing test or traceback the agent can run.
 
@@ -46,13 +46,13 @@ At least 20 of the 90 development tasks are ungradable in the offline sandbox (1
 
 ## 3. Method
 
-Two Gemma 4 E4B instances split the work. The **analyzer** is a read-only sub-agent with 12 tool calls and no conversation history: it greps for the report's identifiers, writes and runs a repro script, and answers with a **brief** whose `CODE` section quotes the code and whose `EDIT_SITES` section gives an exact `old_string` per site. The **coder** calls the analyzer once, applies the top edit with `edit_file`, re-runs the check, repairs at most twice, runs the module's tests and always submits. `include_contents: none` also hides the repository layout from the analyzer. We describe it because it lost (Section 5.3).
+Two Gemma 4 E4B instances split the work. The **analyzer** is a read-only sub-agent with 12 tool calls and no conversation history: it greps for the report's identifiers, writes and runs a repro script, and answers with a **brief** whose `CODE` section quotes the code and whose `EDIT_SITES` section gives an exact `old_string` per site. The **coder** calls the analyzer once, applies the top edit with `edit_file`, re-runs the check, repairs at most twice, runs the module's tests and always submits. `include_contents: none` also hides the repository layout from the analyzer. We describe the design because it lost (Section 5.3).
 
 Sampling: temperature 0.2, top_p 0.9, top_k 40, seed 7; 6,144 output tokens and a 2,048-token thinking budget from the third configuration (p03, Section 4) on (8,192 and 3,072 before). The comparison is the official sample agent (`variants/sample-e4b`): its `agent.yaml` includes `code_analyzer` as an optional agent tool; its `sampling.yaml` reserves 16,384 output tokens.
 
 ## 4. Results
 
-No configuration left the band of 3 to 8 solved tasks out of 90. p-runs are the two-agent design, s-runs the official sample prompt.
+No configuration left the band of 3 to 8 solved tasks out of 90. Below, p-runs are the two-agent design and s-runs the official sample prompt.
 
 | Run | Change | Resolved of 90 |
 | --- | --- | --- |
@@ -74,7 +74,7 @@ No configuration left the band of 3 to 8 solved tasks out of 90. p-runs are the 
 
 On the public leaderboard of 58 hidden tasks, p03 and p08b (up to three single-agent attempts, no analyzer) scored 0.06, s01 and s04 0.03; truncated, 4 and 2 of 58. s02, s03 and s04 each scored 8 of 90 and the three p03 repeats 7, 7 and 8 (any single-run pair, Fisher p = 1.0; pooled 24 vs 22 of 270, p = 0.88); p07's 3 against the pooled p03 repeats' 22 of 270 gives p = 0.15; by the rule stated in Section 5.1, that is unproven.
 
-Unresolved tasks fall into three buckets: wrong fix (patch applied, no test passed or the run crashed), target still failing (patch applied, some tests pass, the graded test fails) and no patch (empty diff; s01 also has 2 budget stops); Figure 3 gives the counts per run.
+Unresolved tasks fall into three buckets: wrong fix (patch applied, test output not a mix of passes and failures), target still failing (patch applied, some tests pass, the graded test fails) and no patch (empty diff; s01 also has 2 budget stops); Figure 3 gives the counts per run.
 
 ![Failure buckets per run](figures/fig3_funnel.png)
 
@@ -126,11 +126,11 @@ We committed the falsification clauses at 15:28 on 2026-11-05 (1f9e162), with th
 
 ## 8. Limitations
 
-Ninety public tasks in three repositories, one to three runs per configuration, one model, one harness. The bucket contrast in Section 5.3 pools three single runs a side of two prompt families and does not separate the brief from the other prompt differences; the anchor decode counts calls and does not judge whether a landed edit was the right edit. We measure that the grading test is usually new; we do not show that its absence causes the 3-to-8 band.
+Ninety public tasks in three repositories, one to three runs per configuration, one model, one harness. The bucket contrast in Section 5.3 pools three single runs a side of two prompt families and does not separate the brief from the other prompt differences; the anchor decode counts calls and does not judge whether a landed edit was the right edit. We measure that the grading test is usually new; we do not show that this causes the 3-to-8 band.
 
 ## 9. Related work
 
-The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda [6] is the best-powered E4B study we know of. Test feedback raised E4B's fix rate on planted library bugs from 26% to 42% [8]; our test patch adds a new test in 72 of 90 tasks. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the count: we found no prior count of whether the grading test pre-exists.
+The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda [6] is the best-powered E4B study we know of. Test feedback raised E4B's fix rate on planted library bugs from 26% to 42% [8]; our test patch adds a new test in 72 of 90 tasks. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the measurement: we found no prior count of whether the grading test pre-exists.
 
 ## 10. Reproducibility
 
@@ -142,7 +142,7 @@ Code, prompts, configs, the experiment log and per-task files are at [github.com
 2. J. Yang, C. E. Jimenez, A. Wettig, K. Lieret, S. Yao, K. Narasimhan, O. Press. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. NeurIPS 2024. https://arxiv.org/abs/2405.15793
 3. C. S. Xia, Y. Deng, S. Dunn, L. Zhang. Agentless: Demystifying LLM-based Software Engineering Agents. arXiv:2407.01489, 2024. https://arxiv.org/abs/2407.01489
 4. On Randomness in Agentic Evals. arXiv:2602.07150, 2026. https://arxiv.org/abs/2602.07150
-5. Sweep. Lessons from building a coding agent for JetBrains. https://blog.sweep.dev/posts/jetbrains-coding-agent
+5. W. Zeng (Sweep). Decreasing agentic code editing failures with output normalization. 2025. Archived at https://web.archive.org/web/20260806152905/https://blog.sweep.dev/posts/jetbrains-coding-agent
 6. T. Toeda. Scaffolding Helps the Smallest Gemma 4 Agent, Not the Larger Ones. Zenodo, 2026. https://zenodo.org/records/23834104
 7. J. Wold. 27 fastapi tasks that fail at collection in the provided sandbox (host reply: private scoring excludes these tasks). Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
 8. A. Mehajabin. Localizing Gemma 4 Agents via AST-Guided Retrieval and Self-Correction. Gemma 4 Developer Agent Paper Track, 2026. https://github.com/anisha274/gemma-ast-agent

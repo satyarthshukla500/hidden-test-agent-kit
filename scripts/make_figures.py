@@ -251,7 +251,7 @@ def fig2():
     ax2.spines["left"].set_visible(False)
     ax2.set_title("landed, by anchor length", fontsize=10.5, fontweight="normal", loc="center")
 
-    fig.text(0.01, 0.99, "Of 243 missing edit anchors, 92 matched text in the brief and 101 matched nothing the coder had received",
+    fig.text(0.01, 0.99, "Of 243 missing edit anchors, 92 matched text in the brief and 101 matched no brief, file window or tool output",
              ha="left", va="top", fontsize=12.5, fontweight="bold")
     fig.subplots_adjust(left=0.2, top=0.86)
     save(fig, "fig2_edit_failures")
@@ -402,7 +402,7 @@ def fig5():
     handles = [Patch(color=c, label=f"{label}: {len(ids)}") for label, ids, c in cats]
     ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, 1.0), fontsize=9.5)
     ax.set_title(f"{len(ungradable)} of 90 dev tasks are not graded in the offline sandbox; "
-                 f"{gradable} are gradable", wrap=True, pad=14)
+                 f"at most {gradable} are gradable", wrap=True, pad=14)
     save(fig, "fig5_sandbox")
 
 
