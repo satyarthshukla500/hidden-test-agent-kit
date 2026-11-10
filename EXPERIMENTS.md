@@ -25,9 +25,9 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | heldout-p07 | 366966580 | p07 on the 39 held-out tasks | 3/39 | |
 | p08smoke | 366973438 | best-of-3 verified attempts (SequentialAgent + LoopAgent), 7 min, 40 calls, 20 tasks | 3/20 | edits ok 14 / fail 48, no edit 8, analyzer no tools 7 of 20. eval 767 s |
 | s04 | 366973438 | s03 + spec contract, sibling coverage, registration, no graph tools, edit by call 12 | 8/90 | wf 47, rg 28, np 7. edits ok 151 / fail 88 (kernel tally; decode 149/239). eval 3512 s |
-| p09 | 366973438 | p07 + the same recipe | 4/90 | wf 44, rg 34, np 8. edits ok 88 / fail 64, no edit 20. eval 4046 s |
+| p09 | 366973438 | p07 + the same five rules | 4/90 | wf 44, rg 34, np 8. edits ok 88 / fail 64, no edit 20. eval 4046 s |
 | p08bsmoke | 367059960 | loop of 3 single-agent attempts (no analyzer), layout listing first, site rotation, 6 min, 40 calls, 60 turns, no new attempt after 150 s, last attempt keeps its edit, finisher never resets | 5/20 | edits 30 ok / 11 fail (kernel tally; decode 28/41), no edit 2, mean wall 138 s, 1 timeout. eval 760 s |
 | p08csmoke | 367063648 | p08b + baseline-aware verifier (compile, test file not worse, probe) + task rules from the trace decode | 5/20 | edits 47 ok / 20 fail (kernel tally; decode 41/67), no edit 1, mean wall 208 s, 2 timeouts, 2 call-budget exhausted. eval 1157 s |
-| p08b | not run | p08b on the 90 dev tasks | - | no gpu time left this week |
+| p08b | not run | p08b on the 90 dev tasks | - | not run yet |
 
 wf = wrong fix, tsf / rg = target test still failing (the `regression` bucket), empty / np = no patch. "kernel tally" is the count printed by the run notebook; "decode" is the count from the traces (results/<tag>/edits.csv). cal1..cal4 and night2 are the overnight batches that ran several tags in one notebook version; the batch has no meaning beyond that.

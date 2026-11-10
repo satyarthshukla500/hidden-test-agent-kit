@@ -10,7 +10,7 @@ The official sample prompt, run under our budget, was one of the 12 configuratio
 
 ## 1. Introduction
 
-Most writeups for this competition change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper reports what 15 runs of Gemma 4 E4B show when read together.
+It is natural to change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper reports what 15 runs of Gemma 4 E4B show when read together.
 
 The setting is the Gemma 4 Developer Agent competition: an agent declared only in YAML and Markdown prompts must fix real bugs in fastapi, rich and requests, offline, inside a 32,768-token window and about five minutes per task. We counted how often a task supplies a failing test or traceback the agent can run.
 
@@ -63,10 +63,10 @@ No configuration left the band of 3 to 8 solved tasks out of 90. p-runs are the 
 | p05 | brief ranks two edit sites; coder tries the second if the first fails its checks | 5 |
 | p06 | p03, coder edits before any test run | 4 |
 | p07 | anchors only from `read_file`, no resend, line-number fallback, analyzer must use tools | 3 |
-| p09 | p07 plus a public prompt recipe | 4 |
+| p09 | p07 plus s04's five rules | 4 |
 | s01 | sample prompt, sample budget (1 min, 10 calls) | 5 |
 | s02 | sample prompt, our budget (5 min, 28 calls) | 8 |
-| s03, s04 | s02 plus edit rules; s04 adds a prompt recipe | 8, 8 |
+| s03, s04 | s02 plus edit rules; s04 adds five prompt rules (EXPERIMENTS.md) | 8, 8 |
 
 ![Resolved tasks per run](figures/fig1_runs.png)
 
@@ -86,7 +86,7 @@ The one-minute sample budget (s01) left 49 of 90 tasks with no patch against 10 
 
 ### 5.1 The noise floor
 
-At 7 solved of 90 (p about 0.08) the binomial standard deviation of one run is 2.5 tasks, so the 95% interval around one run spans about 5 tasks either way; on SWE-bench Verified, identical runs move single-run pass@1 by 2.2 to 6.0 points [4]. Temperature 0.2 and a fixed seed do not remove the variance: four tasks share one vLLM instance.
+At 7 solved of 90 the binomial standard deviation of one run is 2.5 tasks, so the 95% interval spans about 5 tasks either way; on SWE-bench Verified, identical runs move single-run pass@1 by 2.2 to 6.0 points [4]. Temperature 0.2 and a fixed seed do not remove the variance: four tasks share one vLLM instance.
 
 Repeated configurations: p01 and p01b scored 7 and 5 and disagreed on 8 tasks (McNemar p = 0.73); the p03 trio scored 7, 7 and 8. Solve stability S, the tasks solved in every run over the tasks solved in any, was 1/13 over the first 5 runs, 2/14 over the 3 p03 repeats and 1/14 over 8 runs. Only 14 of 90 tasks were ever solved in 8 runs, all 14 by the p03 trio; over all 15 full runs the union is 16 of 90.
 
@@ -112,17 +112,17 @@ Landing rates from the decode: briefed runs 53% pooled (350 of 658 over p03b, p0
 
 ### 5.4 The output reservation
 
-Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and the run log shows the rejection at 24,577 input tokens. Counted in the Kaggle run log (NOTES.md; the log is not in the repository), context-window overflows went from 12 of 90 tasks (p01b, 8,192 reserved) to 0 of 90 (p03, 6,144; p = 0.0003); turn-cap hits went 8 to 4 (p = 0.37, unproven) and timeouts stayed at 8.
+Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and the log shows the rejection at 24,577. Counted in the Kaggle run log (NOTES.md; the log is not in the repository), context-window overflows went from 12 of 90 tasks (p01b, 8,192 reserved) to 0 of 90 (p03, 6,144; p = 0.0003); turn-cap hits went 8 to 4 (p = 0.37, unproven) and timeouts stayed at 8.
 
 ## 6. What to do differently
 
 1. **Repeat before you compare.** Run the unchanged configuration at least twice and treat anything inside that spread as unproven.
 2. **Reserve less output.** In a 32,768-token window, 6,144 reserved tokens removed all 12 overflows counted at 8,192.
-3. **Count landed edits and wrong fixes together.** The design that landed more edits had fewer empty patches and more wrong fixes at the same resolved count; report landing rate and all three buckets per run, with denominators.
+3. **Count landed edits and wrong fixes together.** The design that landed more edits had fewer empty patches and more wrong fixes at the same resolved count; report all three buckets per run.
 
 ## 7. What we wrote down, and what happened
 
-We committed the falsification clauses at 15:28 on 2026-11-05 (1f9e162), with the repeat runs described there as queued and none of their results in the paper; the results were committed 16 minutes later (f1bdece). Logged by 11:36 (5a408c9), it ran 3 h 40 min (NOTES.md) and so finished before 15:28; whether we had read its output, the repository cannot show. The clauses said p03 repeats outside 5 to 7 would void the noise floor: the third repeat scored 8, one task outside, and the pooled spread of repeated configurations is 5 to 8. They said a traceback-anchored baseline matching reproduce-first over repeated runs would void the redesign: we ran the official sample prompt in four variants, none repeated; s02 scored 8 of 90 and matched, so the design claim rests on weaker evidence than we specified. They said overflow reappearing at 6,144 reserved tokens would mean the mechanism was incomplete: the p03b log shows none; p03c's limit events were not recorded.
+We committed the falsification clauses at 15:28 on 2026-11-05 (1f9e162), with the repeat runs described there as queued and none of their results in the paper; the results were committed 16 minutes later (f1bdece). Logged by 11:36 (5a408c9), it ran 3 h 40 min (NOTES.md) and so finished before 15:28; whether we had read its output, the repository cannot show. The repository was first pushed on 2026-11-10, so these are local commit times; Kaggle version 365852417 is the only outside record. The clauses said p03 repeats outside 5 to 7 would void the noise floor: the third repeat scored 8, one task outside, and the pooled spread of repeated configurations is 5 to 8. They said a traceback-anchored baseline matching reproduce-first over repeated runs would void the redesign: we ran the official sample prompt in four variants, none repeated; s02 scored 8 of 90 and matched, so the design claim rests on weaker evidence than we specified. They said overflow reappearing at 6,144 reserved tokens would mean the mechanism was incomplete: the p03b log shows none; p03c's limit events were not recorded.
 
 ## 8. Limitations
 
