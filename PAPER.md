@@ -48,7 +48,7 @@ At least 20 of the 90 development tasks are ungradable in the offline sandbox (1
 
 Two Gemma 4 E4B instances split the work. The **analyzer** is a read-only sub-agent with 12 tool calls and no conversation history: it greps for the report's identifiers, writes and runs a repro script, and answers with a **brief** whose `CODE` section quotes the code and whose `EDIT_SITES` section gives an exact `old_string` per site. The **coder** calls the analyzer once, applies the top edit with `edit_file`, re-runs the check, repairs at most twice, runs the module's tests and always submits. `include_contents: none` also hides the repository layout from the analyzer. We describe the design because it lost (Section 5.3).
 
-Sampling: temperature 0.2, top_p 0.9, top_k 40, seed 7; 6,144 output tokens and a 2,048-token thinking budget from the third configuration (p03, Section 4) on (8,192 and 3,072 before). The comparison is the official sample agent (`variants/sample-e4b`): its `agent.yaml` includes `code_analyzer` as an optional agent tool; its `sampling.yaml` reserves 16,384 output tokens.
+Sampling: temperature 0.2, top_p 0.9, top_k 40, seed 7; 6,144 output tokens and a 2,048-token thinking budget from p03 (Section 4) on (8,192 and 3,072 before). The comparison is the official sample agent (`variants/sample-e4b`): its `agent.yaml` includes `code_analyzer` as an optional agent tool; its `sampling.yaml` reserves 16,384 output tokens.
 
 ## 4. Results
 
@@ -116,7 +116,7 @@ Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and th
 
 ## 6. What to do differently
 
-1. **Repeat before you compare.** Run the unchanged configuration at least twice and treat anything inside that spread as unproven.
+1. **Repeat before you compare.** Run the unchanged configuration at least twice and treat anything inside their spread as unproven.
 2. **Reserve less output.** In a 32,768-token window, 6,144 reserved tokens removed all 12 overflows counted at 8,192.
 3. **Count landed edits and wrong fixes together.** The design that landed more edits had fewer empty patches and more wrong fixes at the same resolved count; report all three buckets per run.
 
@@ -141,8 +141,8 @@ Code, prompts, configs, the experiment log and per-task files are at [github.com
 1. C. E. Jimenez, J. Yang, A. Wettig, S. Yao, K. Pei, O. Press, K. Narasimhan. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? ICLR 2024. https://arxiv.org/abs/2310.06770
 2. J. Yang, C. E. Jimenez, A. Wettig, K. Lieret, S. Yao, K. Narasimhan, O. Press. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. NeurIPS 2024. https://arxiv.org/abs/2405.15793
 3. C. S. Xia, Y. Deng, S. Dunn, L. Zhang. Agentless: Demystifying LLM-based Software Engineering Agents. arXiv:2407.01489, 2024. https://arxiv.org/abs/2407.01489
-4. On Randomness in Agentic Evals. arXiv:2602.07150, 2026. https://arxiv.org/abs/2602.07150
+4. B. H. Bjarnason, A. Silva, M. Monperrus. On Randomness in Agentic Evals. arXiv:2602.07150, 2026. https://arxiv.org/abs/2602.07150
 5. W. Zeng (Sweep). Decreasing agentic code editing failures with output normalization. 2025. Archived at https://web.archive.org/web/20260806152905/https://blog.sweep.dev/posts/jetbrains-coding-agent
 6. T. Toeda. Scaffolding Helps the Smallest Gemma 4 Agent, Not the Larger Ones. Zenodo, 2026. https://zenodo.org/records/23834104
-7. J. Wold. 27 fastapi tasks that fail at collection in the provided sandbox (host reply: private scoring excludes these tasks). Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
+7. J. Wold. 27 fastapi tasks cannot pass in the provided sandbox (missing inline_snapshot and dirty_equals); host reply: private scoring excludes these tasks. Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
 8. A. Mehajabin. Localizing Gemma 4 Agents via AST-Guided Retrieval and Self-Correction. Gemma 4 Developer Agent Paper Track, 2026. https://github.com/anisha274/gemma-ast-agent

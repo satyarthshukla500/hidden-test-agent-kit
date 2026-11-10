@@ -1,6 +1,6 @@
 # notes
 
-Running log, newest at the bottom. The results table is EXPERIMENTS.md; the findings are PAPER.md. `v<n>` is a version of the run notebook, `cal<n>` and `night2` are overnight batches that ran several configurations in one version.
+Running log, newest at the bottom. The results table is EXPERIMENTS.md; the findings are PAPER.md. `v<n>` is a version of the run notebook, `cal<n>` and `night2` are batches that ran several configurations in one version.
 
 2026-11-04
 - read HARNESS_README. tools, budgets, patch stripping all as expected.
@@ -36,10 +36,10 @@ Running log, newest at the bottom. The results table is EXPERIMENTS.md; the find
 - no_patch means empty diff, the harness recovers unsubmitted edits. so 17-19 of 90 tasks end with no edit at all.
 - review.txt 'tool sequence' is junk, TOOLS_RE matches prompt text. real calls are in traces/. cpu notebook gemma-agent-trace-analysis reads them.
 - p03b errors: 8 timeouts, 7 turn cap, 68 none. no_patch 15.
-- traces (p03 x3 + heldout, 309 tasks): edit_file 350 ok / 308 fail. 243 'old_string not found' (source split in the re-decode below), 25 'occurs N times', 21 wrong path.
+- traces (p03b, p03c, p05, heldout-p03; 309 tasks): edit_file 350 ok / 308 fail. 243 'old_string not found' (source split in the re-decode below), 25 'occurs N times', 21 wrong path.
 - after a failed edit: read_file 109, new anchor 80, SAME anchor again 45, submit 23. every no_patch task = zero landed edits.
 - analyzer called no tool in 33/309 tasks and wrote the brief from memory. 5 of those resolved anyway.
-- anchors of 2-8 lines land ~62%, 1 line 44%, 9+ lines 43%. first edit attempt lands 77%.
+- anchors of 2-8 lines land 59%, 1 line 44%, 9+ lines 43%. first edit attempt lands 77%.
 - time is not binding: analyzer done ~40s, first edit ~90s, submit ~115s, wall median 130s of 300.
 - p07 = anchors only from read_file windows, never resend a failed anchor, line-number fallback, analyzer must use tools.
 - cal1 (v10, 2h23m): s01 5/90 with 49 no_patch (1 min budget too short), s02 8/90 (np 10), p06 4/90. single-agent sample prompt + our budget ties p03's best. edit-first hurt.

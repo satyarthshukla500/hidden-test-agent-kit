@@ -8,7 +8,7 @@ Finding, in one line: in 72 of 90 development tasks the grading patch adds a new
 
 This repo holds the Gemma 4 E4B bug-fixing agents we ran in the Kaggle Gemma 4 Developer Agent competition (a reproduce-first analyzer-then-coder design in `submission/`, the official sample prompt under our budget and its variants, and a retry-loop design) and the small kit used to measure them. It goes with the paper "No Test to Anchor On" (`PAPER.md`). Public leaderboard (58 hidden tasks): p03 0.06, p08b 0.06, s01 0.03, s04 0.03, read as 4, 4, 2 and 2 tasks if the scores are truncated to two decimals.
 
-**Run names.** `p*` runs use the two-agent design (analyzer writes a brief, coder edits); `s*` runs use the official sample prompt; `p08*` are retry loops; `heldout-*` are the same configuration on the 39 held-out tasks; `*smoke` is a 20-task check. A letter suffix (p03b, p03c) is a repeat of the same configuration. An edit "lands" when its `old_string` is found in the file. The per-task outcome of every run is in `results/<tag>/buckets.json`; `wf / rg / np` in the logs are wrong fix, target test still failing, no patch.
+**Run names.** `p*` runs other than `p08*` use the two-agent design (analyzer writes a brief, coder edits); `s*` runs use the official sample prompt; `p08*` are retry loops; `heldout-*` are the same configuration on the 39 held-out tasks; `*smoke` is a 20-task check. A letter suffix (p03b, p03c) is a repeat of the same configuration. An edit "lands" when its `old_string` is found in the file. The per-task outcome of every run is in `results/<tag>/buckets.json`; `wf / rg / np` in the logs are wrong fix, target test still failing, no patch.
 
 Read next: `PAPER.md` for the findings, `EXPERIMENTS.md` for one row per run, `NOTES.md` for the running measurements.
 
@@ -56,6 +56,6 @@ and import the generated `kaggle/p03/gemma-agent-p03.ipynb` into the fork (`kagg
 
 ## Notebook versions
 
-Runs are versions of the kaggle notebook `voidwalkers123/getting-started-gemma-4-developer-agent`. The scriptVersionId for each run is in `EXPERIMENTS.md`.
+Runs are versions of the Kaggle notebook `voidwalkers123/getting-started-gemma-4-developer-agent`. The scriptVersionId for each run is in `EXPERIMENTS.md`.
 
 MIT license.

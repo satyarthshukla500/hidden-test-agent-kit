@@ -14,7 +14,7 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | p03 | 365825150 | output 6144, thinking 2048 | 7/90 | overflow 12 to 0. kept |
 | p04 | 365848731 | temperature 0 | - | stopped at 10 min |
 | p03b | 365852417 | p03 again, unchanged | 7/90 | night2 job 1 |
-| p03c | 365852417 | p03 again, unchanged | 8/90 | night2 job 2. p03 x3: 14 solved once, 2 every time |
+| p03c | 365852417 | p03 again, unchanged | 8/90 | night2 job 2. p03 x3: 14 solved at least once, 2 every time |
 | p05 | 365852417 | rank-2 fallback in coder | 5/90 | rank reported on 21, fallback used once |
 | heldout-p03 | 365852417 | p03 on the 39 held-out tasks | 5/39 | night2 job 4 |
 | s01 | 366917009 | official sample prompts on e4b, no adapters, sample budget (1 min, 10 calls) | 5/90 | no_patch 49. eval 1454 s |
@@ -30,4 +30,4 @@ all runs on the 90-task dev split, gemma-4-e4b, 4 tasks concurrent, unless noted
 | p08csmoke | 367063648 | p08b + baseline-aware verifier (compile, test file not worse, probe) + task rules from the trace decode | 5/20 | edits 47 ok / 20 fail (kernel tally; decode 41/67), no edit 1, mean wall 208 s, 2 timeouts, 2 call-budget exhausted. eval 1157 s |
 | p08b | not run | p08b on the 90 dev tasks | - | not run yet; public leaderboard 0.06 (4/58) |
 
-wf = wrong fix, tsf / rg = target test still failing (the `regression` bucket), empty / np = no patch. "kernel tally" is the count printed by the run notebook; "decode" is the count from the traces (results/<tag>/edits.csv). cal1..cal4 and night2 are the overnight batches that ran several tags in one notebook version; the batch has no meaning beyond that.
+wf = wrong fix, tsf / rg = target test still failing (the `regression` bucket), empty / np = no patch. "kernel tally" is the count printed by the run notebook; "decode" is the count from the traces (results/<tag>/edits.csv). cal1..cal4 and night2 are batches that ran several tags in one notebook version; the batch has no meaning beyond that.
