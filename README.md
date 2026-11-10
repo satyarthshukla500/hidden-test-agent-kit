@@ -49,7 +49,7 @@ and import the generated `kaggle/p03/gemma-agent-p03.ipynb` into the fork (`kagg
 ## Bucket labels
 
 - `resolved` all required tests pass
-- `wrong_fix` a patch was applied and the target test fails
+- `wrong_fix` a patch was applied, the task was not resolved, and the test output does not show both passed and FAILED lines
 - `regression` the patch applied and the test output has both passed and FAILED lines; in practice the graded test still fails while others pass, so the paper calls this bucket "target still failing"
 - `no_patch` empty diff
 - `apply_failed`, `timeout`, `budget_exhausted`, `agent_error` as named. Only `budget_exhausted` occurred: 2 tasks in s01 and 2 in the p08c smoke
