@@ -7,7 +7,7 @@ was "old_string not found", where the anchor text had appeared before: in the an
 brief, in a read_file window, in a shell or search output, in the coder's own earlier
 text, only in analyzer tool output the coder never saw, or nowhere. Writes edits.csv and prints a summary. Standard library only.
 
-  python scripts/edit_decode.py results/p03 results/p03b results/p03c results/heldout-p03
+  python scripts/edit_decode.py results/p03b results/p03c results/p05 results/heldout-p03
   (on Kaggle: python edit_decode.py /kaggle/input/<notebook-output>/results/*)
 
 Matching order for a missing anchor: read_file first (the text was in a file window the

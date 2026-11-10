@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure the hidden-test condition on any SWE-bench-format task file.
 
-For each task: does the grading test patch only ADD test functions (so the graded
+For each task: does the grading test patch add a new test function (a +def test_ line and no -def test_ line, so the graded
 test does not exist before the fix)? Does the issue text carry a traceback or a code
 block? How many files does the reference fix touch? Standard library only.
 

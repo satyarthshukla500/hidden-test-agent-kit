@@ -42,8 +42,8 @@ ax.text(x0, y0 + 8 * k + 12, "15 runs, 12 designs, all 3 to 8 of 90", fontsize=8
 ax.text(x0, y0 - 11, "resolved of 90 per run; blue = official sample prompt", fontsize=6.6, color=DIM, ha="left", va="center")
 
 # bottom band
-ax.text(28, 62, "A Gemma 4 E4B agent has no failing test to run, so the differences between", fontsize=9.5, color=DIM, ha="left", va="center")
-ax.text(28, 45, "designs are noise. We measured the condition, the edits and the floor.", fontsize=9.5, color=DIM, ha="left", va="center")
+ax.text(28, 62, "A Gemma 4 E4B agent rarely has a failing test to run, and the", fontsize=9.5, color=DIM, ha="left", va="center")
+ax.text(28, 45, "differences between designs stay inside the noise.", fontsize=9.5, color=DIM, ha="left", va="center")
 ax.text(28, 20, "Gemma 4 E4B  |  15 runs  |  309 traced tasks  |  code, prompts and per-task results, MIT", fontsize=7.5, color=DIM, ha="left", va="center")
 
 out = Path("assets/card.png"); out.parent.mkdir(exist_ok=True)

@@ -2,7 +2,7 @@
 
 ![No Test to Anchor On](assets/card.png)
 
-Gemma 4 E4B is the smallest Gemma 4 model the competition allows; a task is one real bug report from fastapi, rich or requests that the agent must fix offline.
+Gemma 4 E4B is the smallest Gemma 4 model the competition allows; a task is one real bug report from fastapi, rich, requests or httpx that the agent must fix offline.
 
 Finding, in one line: in 72 of 90 development tasks the grading patch adds a new test the agent never sees, so a Gemma 4 E4B agent has no failing test to run, and every one of our 15 runs solved 3 to 8 of 90; the rest is noise, measured. The paper is `PAPER.md`.
 
@@ -18,7 +18,7 @@ The repository was first pushed on 2026-11-10; commit dates before that are loca
 
 - `submission/` the p03 agent as first submitted: `agent.yaml`, `sub_agents/code_analyzer.yaml`, prompts, sampling and budget config
 - `prompts/reproduce_first.md` the analyzer prompt on its own
-- `variants/` every other configuration we ran: `sample-e4b` (official sample prompt, s01), `sample-e4b-budget` (s02), `s03`, `s04`, `p06`, `p07`, `p09`, the retry loops `p08`, `p08b`, `p08c`, `rank2` (the analyzer ranks two edit sites, p05) and `12b-probe` (a 12-task look at Gemma 4 12B)
+- `variants/` the other configurations (p00-base, p01 and p02 are earlier versions of `submission/` in the git history): `sample-e4b` (official sample prompt, s01), `sample-e4b-budget` (s02), `s03`, `s04`, `p06`, `p07`, `p09`, the retry loops `p08`, `p08b`, `p08c`, `rank2` (the analyzer ranks two edit sites, p05) and `12b-probe` (a 12B configuration prepared but not run; the 12-task 12B look, p01-12b, used p01's prompts)
 - `scripts/` split, bucketing, noise floor, task properties, edit-anchor decode (`edit_decode.py`), figures (`make_figures.py`), build and Kaggle kernel generators
 - `results/<tag>/buckets.json` per-task outcome of every run in the paper's tables; `results/<tag>/edits.csv` every `edit_file` call of the 15 decoded runs; five of them (p03b, p03c, p05, heldout-p03, p08csmoke) add an anchor hash and a resend flag and come with `tasks.csv` (analyzer tool calls, edit calls, landed, distinct anchors per task); `raw.txt` (four early runs) the compact line the notebook printed, task / bucket / tool calls, from which buckets.json was built; `brief_review.json` (p00-base) whether the analyzer's brief pointed at the file the reference fix touched
 - `data/splits/` the dev and held-out task ids (the competition data itself is not redistributed)
