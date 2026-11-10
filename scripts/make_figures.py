@@ -320,7 +320,7 @@ def fig3():
     ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.07), ncol=3)
     ax.text(0, -0.2, "* pooled over p03b, p03c, p05 and held-out p03 (350 of 658 edit_file calls)",
             transform=ax.transAxes, fontsize=8.5, color="#555555", va="top")
-    ax.set_title("Sample-prompt runs landed 62-69% of edits, briefed runs 53-59%; "
+    ax.set_title("Sample-prompt runs landed 62-69% of edits, briefed runs 49-60%; "
                  "resolved stayed at 3 to 8 of 90", wrap=True)
     save(fig, "fig3_funnel")
 

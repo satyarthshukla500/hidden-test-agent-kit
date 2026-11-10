@@ -20,7 +20,7 @@ Every experiment, prompt and decision is logged in `EXPERIMENTS.md` and `NOTES.m
 
 ## Running it
 
-Needs the competition files in `data/` (not redistributed). Python 3.10+, no dependencies.
+Needs the competition files in `data/` (not redistributed). Python 3.10+, standard library only (matplotlib for the figures and the card).
 
 ```bash
 python scripts/make_splits.py
