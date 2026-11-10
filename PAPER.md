@@ -4,13 +4,13 @@
 
 ## Abstract
 
-In 72 of our 90 development tasks the grading patch adds a new test function, and in 55 of 90 it touches no existing test; 1 report in 90 contains a traceback. A Gemma 4 E4B agent, offline in a 32,768-token window with about five minutes per SWE-bench-format task, has no failing test to run. Our best run solved 8 of 90; on the public leaderboard four submissions scored 0.06, 0.06, 0.03 and 0.03 on 58 hidden tasks, which we read as 4, 4, 2 and 2 (95% interval for 4 of 58, 1 to 10). Fifteen runs of 12 configurations all solved 3 to 8 of 90, and reruns of two configurations spanned 5 to 7 and 7 to 8, so no comparison of solve counts here is significant (largest gap 8 vs 3 of 90, Fisher p = 0.21). In 309 traced tasks, 243 of 308 failed edits asked to replace text not in the file.
+A Gemma 4 E4B agent, offline in a 32,768-token window with about five minutes per SWE-bench-format task, almost never has a failing test to run: in 72 of our 90 development tasks the grading patch adds a new test function, in 55 it touches no existing test, and 1 report in 90 contains a traceback. The best runs solved 8 of 90; on the public leaderboard four submissions scored 0.06, 0.06, 0.03 and 0.03 on 58 hidden tasks, which, truncated, read as 4, 4, 2 and 2 (95% interval for 4 of 58, 1 to 10). Fifteen runs of 12 configurations all solved 3 to 8 of 90, and reruns of two configurations spanned 5 to 7 and 7 to 8, so no comparison of solve counts here is significant (largest gap 8 vs 3 of 90, Fisher p = 0.21). In 309 traced tasks, 243 of 308 failed edits asked to replace text not in the file.
 
 The official sample prompt, run under our budget, was one of the 12 configurations and scored 8 of 90; our two-agent design, a read-only analyzer writing a brief for a coder, scored 7, 7 and 8. An edit lands when its anchor, the exact `old_string` the edit call must match, is in the file. Runs on the official sample prompt landed 62% to 69% of their edits; runs on our brief design landed 45% to 60%, pooled 53% (Section 5.3). Edit rules added to either family moved its landing rate by about six points at most. Pooled over three runs each, 270 tasks a side, the sample family left fewer tasks with no patch (33 vs 51, p = 0.04), produced more wrong fixes (134 vs 112, p = 0.07) and resolved the same number (24 vs 22). Of 243 missing anchors in the four decoded briefed runs, 92 matched text in the brief and 101 matched nothing in the brief, the file windows read or any tool output. A landed edit is necessary and nowhere near sufficient: across the three sample-prompt runs, 213 of 237 applied patches still failed the graded test, so landing is plumbing. Lessons: repeat before comparing, reserve less output, report all three buckets.
 
 ## 1. Introduction
 
-It is natural to change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper reports what 15 runs of Gemma 4 E4B show when read together.
+It is natural to change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything. This paper reads 15 runs of Gemma 4 E4B together.
 
 The setting is the Gemma 4 Developer Agent competition: an agent declared only in YAML and Markdown prompts must fix real bugs in fastapi, rich and requests, offline, inside a 32,768-token window and about five minutes per task. We counted how often a task supplies a failing test or traceback the agent can run.
 
@@ -18,8 +18,8 @@ Contributions:
 
 1. **The task condition, bounded and reproducible.** 72 of 90 development tasks add a new test function and 1 report of 90 contains a traceback; the counting rule is one sentence (Section 2) and `scripts/task_properties.py` applies it to any SWE-bench-format file.
 2. **Landing versus outcome.** Of 658 `edit_file` calls in 309 traced tasks, 243 failed because the anchor was not in the file; 92 of those matched the brief and 101 matched neither the brief nor any tool output. Sample-prompt runs landed more edits, left fewer tasks with no patch (33 vs 51 of 270 pooled, p = 0.04) and resolved the same number (24 vs 22).
-3. **A pre-stated negative result, with its breaches.** Our brief design scored 7, 7 and 8 of 90 and did not beat the official sample prompt under the same budget (8 of 90, Fisher p = 1.0); on the leaderboard it scored 4 of 58, as did a retry loop with no brief.
-4. **A noise data point for small agents.** SD 2.5 tasks at p about 0.08, n = 90; repeats of two configurations spanned 5 to 7 and 7 to 8; only 14 of 90 tasks were ever solved in 8 runs.
+3. **A pre-stated negative result, with its breaches.** Our brief design scored 7, 7 and 8 of 90 and did not beat the official sample prompt under the same budget (8 of 90, Fisher p = 1.0); on the leaderboard it scored 4 of 58 in one run, as did a no-brief retry loop.
+4. **A noise data point for small agents.** SD 2.5 tasks at p about 0.08, n = 90; repeats of two configurations spanned 5 to 7 and 7 to 8.
 
 ## 2. Setting
 
@@ -32,7 +32,7 @@ We split the 129 public tasks by repository into 90 development and 39 held-out 
 | Test patch adds a new test function | 72 of 90 |
 | Adds new tests and touches no existing test line | 55 of 90 |
 | Also edits an existing test / creates a new test file | 17 / 0 of 90 |
-| Report contains "Traceback" (any case: 5) | 1 of 90 |
+| Report contains "Traceback" (5 in any case) | 1 of 90 |
 | Report names an *Error or *Exception class | 10 of 90 |
 | Reference fix touches one file / three or more | 65 / 13 of 90 |
 
@@ -72,9 +72,9 @@ No configuration left the band of 3 to 8 solved tasks out of 90. p-runs are the 
 
 *Figure 2. Resolved tasks for every full run (of 90), two held-out runs (of 39) and three 20-task smokes.*
 
-On the public leaderboard of 58 hidden tasks p03 and p08b, a loop of up to three single-agent attempts with no analyzer (5 of 20 on a smoke), scored 0.06 and s01 and s04 0.03, read as 4 and 2 of 58. s02, s03 and s04 each scored 8 of 90 and the three p03 repeats 7, 7 and 8 (any single-run pair, Fisher p = 1.0; pooled 24 vs 22 of 270, p = 0.88); p07's 3 against the pooled p03 repeats' 22 of 270 gives p = 0.15; by the rule stated in Section 5.1, that is unproven.
+On the public leaderboard of 58 hidden tasks, p03 and p08b (up to three single-agent attempts, no analyzer) scored 0.06, s01 and s04 0.03; truncated, 4 and 2 of 58. s02, s03 and s04 each scored 8 of 90 and the three p03 repeats 7, 7 and 8 (any single-run pair, Fisher p = 1.0; pooled 24 vs 22 of 270, p = 0.88); p07's 3 against the pooled p03 repeats' 22 of 270 gives p = 0.15; by the rule stated in Section 5.1, that is unproven.
 
-Unresolved tasks fall into three buckets: wrong fix (patch applied, no test passed or the run crashed), target still failing (patch applied, some tests pass, the graded test fails) and no patch (empty diff); Figure 3 gives the counts per run.
+Unresolved tasks fall into three buckets: wrong fix (patch applied, no test passed or the run crashed), target still failing (patch applied, some tests pass, the graded test fails) and no patch (empty diff; s01 also has 2 budget stops); Figure 3 gives the counts per run.
 
 ![Failure buckets per run](figures/fig3_funnel.png)
 
@@ -88,7 +88,7 @@ The one-minute sample budget (s01) left 49 of 90 tasks with no patch against 10 
 
 At 7 solved of 90 the binomial standard deviation of one run is 2.5 tasks, so the 95% interval spans about 5 tasks either way; on SWE-bench Verified, identical runs move single-run pass@1 by 2.2 to 6.0 points [4]. Temperature 0.2 and a fixed seed do not remove the variance: four tasks share one vLLM instance.
 
-Repeated configurations: p01 and p01b scored 7 and 5 and disagreed on 8 tasks (McNemar p = 0.73); the p03 trio scored 7, 7 and 8. Solve stability S, the tasks solved in every run over the tasks solved in any, was 1/13 over the first 5 runs, 2/14 over the 3 p03 repeats and 1/14 over 8 runs. Only 14 of 90 tasks were ever solved in 8 runs, all 14 by the p03 trio; over all 15 full runs the union is 16 of 90.
+Repeated configurations: p01 and p01b scored 7 and 5 and disagreed on 8 tasks (McNemar p = 0.73); the p03 trio scored 7, 7 and 8. Solve stability S, the tasks solved in every run over the tasks solved in any, was 1/13 over the first 5 runs, 2/14 over the 3 p03 repeats and 1/14 over 8 runs (p00-base, p01, p01b, p02, p03, p03b, p03c, p05). Only 14 of 90 tasks were ever solved in these 8, all 14 by the p03 trio; over all 15 full runs the union is 16 of 90.
 
 ![Per-task solve matrix](figures/fig4_consistency.png)
 
@@ -108,7 +108,7 @@ The brief's `CODE` section is the analyzer's paraphrase, and the design relies o
 
 ### 5.3 What landed edits became
 
-Landing rates from the decode: briefed runs 53% pooled (350 of 658 over p03b, p03c, p05 and held-out p03; per run 47% to 60%), 59% (p06, 118 of 199), 54% (p07, 93 of 172), 45% (held-out p07, 28 of 62); sample-prompt runs 64% (s02, 119 of 187, no edit rules), 69% (s03, 117 of 169), 62% (s04, 149 of 239). The rules moved landing within a family by about six points (sample +6 and -1, p = 0.31, 0.84; p07 +1, p = 0.86; p06, an ordering change, +6, p = 0.14); the gap is between families (350 of 658 vs 385 of 595, p = 4e-5). p07, which also changed the analyzer and added a line-number fallback outside `edit_file`, is the obvious repair for Section 5.2's missing anchors; it landed 54% of its `edit_file` calls and solved 3. Pooled over three runs each: no-patch 33 vs 51 of 270 (p = 0.043), wrong fix 134 vs 112 (p = 0.069), resolved 24 vs 22 (p = 0.88). Only the no-patch contrast clears the Section 5.1 rule: the sample prompt more often produced some patch, not more often the right one.
+Landing rates from the decode: briefed runs 53% pooled (350 of 658 over p03b, p03c, p05 and held-out p03; per run 47% to 60%), 59% (p06, 118 of 199), 54% (p07, 93 of 172), 45% (held-out p07, 28 of 62); sample-prompt runs 64% (s02, 119 of 187, no edit rules), 69% (s03, 117 of 169), 62% (s04, 149 of 239). The rules moved landing within a family by about six points (sample +6 and -1, p = 0.31, 0.84; p07 +1, p = 0.86; p06, an ordering change, +6, p = 0.14); the gap is between families (350 of 658 vs 385 of 595, p = 4e-5). p07, which also changed the analyzer and added a line-number fallback outside `edit_file`, is the obvious repair for Section 5.2's missing anchors; it landed 54% of its `edit_file` calls and solved 3. Pooled over three runs each: no-patch 33 vs 51 of 270 (p = 0.043), wrong fix 134 vs 112 (p = 0.069), resolved 24 vs 22 (p = 0.88). Only the no-patch contrast clears the Section 5.1 rule, uncorrected (Holm over the three: 0.13): the sample prompt more often produced some patch, not more often the right one.
 
 ### 5.4 The output reservation
 
@@ -122,7 +122,7 @@ Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and th
 
 ## 7. What we wrote down, and what happened
 
-We committed the falsification clauses at 15:28 on 2026-11-05 (1f9e162), with the repeat runs described there as queued and none of their results in the paper; the results were committed 16 minutes later (f1bdece). Logged by 11:36 (5a408c9), it ran 3 h 40 min (NOTES.md) and so finished before 15:28; whether we had read its output, the repository cannot show. The repository was first pushed on 2026-11-10, so these are local commit times; Kaggle version 365852417 is the only outside record. The clauses said p03 repeats outside 5 to 7 would void the noise floor: the third repeat scored 8, one task outside, and the pooled spread of repeated configurations is 5 to 8. They said a traceback-anchored baseline matching reproduce-first over repeated runs would void the redesign: we ran the official sample prompt in four variants, none repeated; s02 scored 8 of 90 and matched, so the design claim rests on weaker evidence than we specified. They said overflow reappearing at 6,144 reserved tokens would mean the mechanism was incomplete: the p03b log shows none; p03c's limit events were not recorded.
+We committed the falsification clauses at 15:28 on 2026-11-05 (1f9e162), with the repeat runs described there as queued and none of their results in the paper; the results were committed 16 minutes later (f1bdece). The repeat run, logged as pending at 11:36 (5a408c9), took 3 h 40 min (NOTES.md, committed 2026-11-10), finishing before 15:28; whether we had read its output, the repository cannot show. The repository was first pushed on 2026-11-10, so these are local commit times; Kaggle version 365852417 is the only outside record. The clauses said p03 repeats outside 5 to 7 would void the noise floor: the third repeat scored 8, one task outside, and the pooled spread of repeated configurations is 5 to 8. They said a traceback-anchored baseline matching reproduce-first over repeated runs would void the redesign: we ran the official sample prompt in four variants, none repeated; s02 scored 8 of 90 and matched, so the design claim rests on weaker evidence than we specified. They said overflow reappearing at 6,144 reserved tokens would mean the mechanism was incomplete: the p03b log shows none; p03c's limit events were not recorded.
 
 ## 8. Limitations
 
@@ -130,7 +130,7 @@ Ninety public tasks in three repositories, one to three runs per configuration, 
 
 ## 9. Related work
 
-The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda [6] is the best-powered E4B study we know of. Test feedback raised E4B's fix rate on planted library bugs from 26% to 42% [8]; our test patch adds a new test in 72 of 90 tasks. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the count: nobody we read counted whether the grading test pre-exists.
+The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda [6] is the best-powered E4B study we know of. Test feedback raised E4B's fix rate on planted library bugs from 26% to 42% [8]; our test patch adds a new test in 72 of 90 tasks. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the count: we found no prior count of whether the grading test pre-exists.
 
 ## 10. Reproducibility
 
