@@ -63,7 +63,7 @@ No configuration left the band of 3 to 8 solved tasks out of 90. Below, p-runs a
 | p05 | brief ranks two edit sites; coder tries the second if the first fails its checks | 5 |
 | p06 | p03, coder edits before any test run | 4 |
 | p07 | anchors only from `read_file`, no resend, line-number fallback, analyzer must use tools | 3 |
-| p09 | p07 plus s04's five rules | 4 |
+| p09 | p07 plus four of s04's five rules | 4 |
 | s01 | sample prompt, sample budget (1 min, 10 calls) | 5 |
 | s02 | sample prompt, our budget (5 min, 28 calls) | 8 |
 | s03, s04 | s02 plus edit rules; s04 adds five prompt rules (EXPERIMENTS.md) | 8, 8 |

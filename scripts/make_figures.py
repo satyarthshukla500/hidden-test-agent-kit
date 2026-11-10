@@ -110,7 +110,7 @@ def dev_tasks():
 
 
 def ungradable_sets(tasks):
-    """Dev tasks the offline sandbox does not grade (NOTES.md 2026-11-09, analysis):
+    """Dev tasks the offline sandbox does not grade (NOTES.md 2026-11-09, sandbox analysis):
     the wheels cache lacks inline_snapshot and dirty_equals, and tests/test_requests.py
     errors at collection. Derived from the test_patch text."""
     inline, dirty, treq = set(), set(), set()

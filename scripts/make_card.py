@@ -24,7 +24,7 @@ ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, 560); ax.set_ylim(0, 280); ax.ax
 ax.text(28, 250, "No Test to Anchor On", fontsize=19, fontweight="bold", color=FG, ha="left", va="center")
 ax.text(28, 222, "What 15 runs of a Gemma 4 E4B bug-fixing agent show: hidden tests, failed edits, noise", fontsize=8.4, color=DIM, ha="left", va="center")
 
-# middle band, left: the hook (this is what the gallery and the thumbnail show)
+# middle band, left: the finding
 ax.text(26, 156, "72", fontsize=34, fontweight="bold", color=ACC, ha="left", va="center", family="DejaVu Sans")
 ax.text(92, 168, "of 90", fontsize=18, fontweight="bold", color=ACC, ha="left", va="center")
 ax.text(92, 143, "tasks hide the test", fontsize=11.5, fontweight="bold", color=FG, ha="left", va="center")

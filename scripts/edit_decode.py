@@ -4,14 +4,15 @@
 Reads ATIF traces (trace_<id>.json) under one or more results folders and, for every
 edit_file call made by the main agent, records whether it landed and, when the error
 was "old_string not found", where the anchor text had appeared before: in the analyzer
-brief, in a read_file window, in a shell or search
-output, or nowhere. Writes edits.csv and prints a summary. Standard library only.
+brief, in a read_file window, in a shell or search output, in the coder's own earlier
+text, only in analyzer tool output the coder never saw, or nowhere. Writes edits.csv and prints a summary. Standard library only.
 
   python scripts/edit_decode.py results/p03 results/p03b results/p03c results/heldout-p03
   (on Kaggle: python edit_decode.py /kaggle/input/<notebook-output>/results/*)
 
 Matching order for a missing anchor: read_file first (the text was in a file window the
-model had seen), then brief, then shell/search; a hit in an earlier source wins. Whitespace
+model had seen), then brief, shell, search, the coder's own text, analyzer-only output;
+a hit in an earlier source wins. Whitespace
 is normalised (runs of spaces/tabs collapse, CRLF dropped) in a second pass.
 """
 from __future__ import annotations
