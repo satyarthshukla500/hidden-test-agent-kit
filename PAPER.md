@@ -46,7 +46,7 @@ At least 20 of the 90 development tasks are ungradable in the offline sandbox (1
 
 ## 3. Method
 
-Two Gemma 4 E4B instances split the work. The **analyzer** is a read-only sub-agent with 12 tool calls and no conversation history: it greps for the report's identifiers, writes and runs a repro script, and answers with a **brief** whose `CODE` section quotes the code and whose `EDIT_SITES` section gives an exact `old_string` per site. The **coder** calls the analyzer once, applies the top edit with `edit_file`, re-runs the check, repairs at most twice, runs the module's tests and always submits. `include_contents: none` hides the conversation from the analyzer, including the repository layout given in the first user message. We describe it because it lost (Section 5.3).
+Two Gemma 4 E4B instances split the work. The **analyzer** is a read-only sub-agent with 12 tool calls and no conversation history: it greps for the report's identifiers, writes and runs a repro script, and answers with a **brief** whose `CODE` section quotes the code and whose `EDIT_SITES` section gives an exact `old_string` per site. The **coder** calls the analyzer once, applies the top edit with `edit_file`, re-runs the check, repairs at most twice, runs the module's tests and always submits. `include_contents: none` also hides the repository layout from the analyzer. We describe it because it lost (Section 5.3).
 
 Sampling: temperature 0.2, top_p 0.9, top_k 40, seed 7; 6,144 output tokens and a 2,048-token thinking budget from the third configuration (p03, Section 4) on (8,192 and 3,072 before). The comparison is the official sample agent (`variants/sample-e4b`): its `agent.yaml` includes `code_analyzer` as an optional agent tool; its `sampling.yaml` reserves 16,384 output tokens.
 
@@ -112,7 +112,7 @@ Landing rates from the decode: briefed runs 53% pooled (350 of 658 over p03b, p0
 
 ### 5.4 The output reservation
 
-Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and the log shows the rejection at 24,577. Counted in the Kaggle run log (NOTES.md; the log is not in the repository), context-window overflows went from 12 of 90 tasks (p01b, 8,192 reserved) to 0 of 90 (p03, 6,144; p = 0.0003); turn-cap hits went 8 to 4 (p = 0.37, unproven) and timeouts stayed at 8.
+Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and the log shows the rejection at 24,577. Counted in the Kaggle run log (NOTES.md; the log is not in the repository), context-window overflows went from 12 of 90 tasks (p01b, 8,192 reserved) to 0 of 90 (p03, 6,144; p = 0.0003).
 
 ## 6. What to do differently
 
@@ -130,7 +130,7 @@ Ninety public tasks in three repositories, one to three runs per configuration, 
 
 ## 9. Related work
 
-The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda's pre-registered study [6] is the best-powered E4B result we know of. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the count: nobody we read counted whether the grading test pre-exists.
+The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda [6] is the best-powered E4B study we know of. Test feedback raised E4B's fix rate on planted library bugs from 26% to 42% [8]; our test patch adds a new test in 72 of 90 tasks. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; new here is the count: nobody we read counted whether the grading test pre-exists.
 
 ## 10. Reproducibility
 
@@ -145,3 +145,4 @@ Code, prompts, configs, the experiment log and per-task files are at [github.com
 5. Sweep. Lessons from building a coding agent for JetBrains. https://blog.sweep.dev/posts/jetbrains-coding-agent
 6. T. Toeda. Scaffolding Helps the Smallest Gemma 4 Agent, Not the Larger Ones. Zenodo, 2026. https://zenodo.org/records/23834104
 7. J. Wold. 27 fastapi tasks that fail at collection in the provided sandbox (host reply: private scoring excludes these tasks). Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
+8. A. Mehajabin. Localizing Gemma 4 Agents via AST-Guided Retrieval and Self-Correction. Gemma 4 Developer Agent Paper Track, 2026. https://github.com/anisha274/gemma-ast-agent
