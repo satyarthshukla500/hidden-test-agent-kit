@@ -14,6 +14,8 @@ for r in RUNS:
     assert len(b) == 90, r
     solved.append(sum(x["bucket"] == "resolved" for x in b))
 assert min(solved) == 3 and max(solved) == 8, solved
+import csv
+NEW = sum(1 for r in csv.DictReader(open("results/task_table.csv", encoding="utf-8")) if r["split"] == "dev" and r["adds_new_test"] == "1")
 
 BG, FG, DIM, ACC, ACC2 = "#0b1020", "#f3f4f6", "#9aa3b2", "#f5b942", "#3b82f6"
 fig = plt.figure(figsize=(5.6, 2.8), dpi=200)
@@ -25,7 +27,7 @@ ax.text(28, 250, "No Test to Anchor On", fontsize=19, fontweight="bold", color=F
 ax.text(28, 222, "What 15 runs of a Gemma 4 E4B bug-fixing agent show: hidden tests, failed edits, noise", fontsize=8.4, color=DIM, ha="left", va="center")
 
 # middle band, left: the finding
-ax.text(26, 156, "72", fontsize=34, fontweight="bold", color=ACC, ha="left", va="center", family="DejaVu Sans")
+ax.text(26, 156, str(NEW), fontsize=34, fontweight="bold", color=ACC, ha="left", va="center", family="DejaVu Sans")
 ax.text(92, 168, "of 90", fontsize=18, fontweight="bold", color=ACC, ha="left", va="center")
 ax.text(92, 143, "tasks hide the test", fontsize=11.5, fontweight="bold", color=FG, ha="left", va="center")
 ax.text(26, 114, "the agent would need to run.", fontsize=11.5, fontweight="bold", color=FG, ha="left", va="center")

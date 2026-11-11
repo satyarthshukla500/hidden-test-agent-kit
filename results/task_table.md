@@ -11,7 +11,7 @@ SWE-bench-format file; `split` needs `data/splits/`, and the run columns need th
 | `split` | `dev` or `heldout` from `data/splits/` (seed 1234, by repository) |
 | `adds_new_test` | 1 if the grading test patch has a `+def test_` line (or `+async def test_`) and no `-def test_` line. A renamed or replaced test counts as 0 |
 | `removes_test_line` | 1 if `adds_new_test` and the test patch also removes any non-blank line (a test, import or fixture). `adds_new_test` with 0 here is the paper's "touches no existing test" |
-| `creates_new_test_file` | 1 if the test patch adds a file (`--- /dev/null`) |
+| `creates_new_test_file` | 1 if the test patch creates a file: `--- /dev/null`, or a first hunk starting at line 0 (`@@ -0,0`) |
 | `report_has_traceback` | 1 if the bug report contains `Traceback` (case-sensitive) |
 | `report_names_error` | 1 if the report contains a capitalised word ending in `Error` or `Exception` (a heuristic; prose can match) |
 | `report_has_code_block` | 1 if the report contains a fenced code block |
@@ -25,5 +25,10 @@ model (Gemma 4 E4B) and one agent family across 15 prompt configurations: 0 of 1
 solved it, not that the task is hard in general, and held-out counts (of 2) are not comparable with dev counts
 (of 15).
 
-Counts. All 129: 99 add a new test function (78 of them remove no test line), 1 report has a traceback, 29
-cannot be graded offline. The 90 dev tasks give the paper's 72, 55, 1 and 20.
+Counts. All 129: 98 add a new test function (77 of them remove no test line), 1 report has a traceback, 29
+cannot be graded offline. The 90 dev tasks give the paper's 71, 54, 1 and 20; 34 dev test patches create a test file.
+
+Check. `python scripts/check_task_labels.py data/tasks.jsonl data/snapshots` opens each task's pre-fix repository
+snapshot and looks for every test function the grading patch adds. In all 98 tasks labelled `adds_new_test`, none
+of those functions is defined in its file before the fix (`results/task_label_check.csv`). Three tasks labelled 0
+also have no pre-existing graded function: their patches replace a test, so the patch-only rule is conservative.

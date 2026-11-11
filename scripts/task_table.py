@@ -16,11 +16,12 @@ import json
 import re
 from pathlib import Path
 
-ADD = re.compile(r"^\+\s*(?:async\s+)?def (test_\w+)", re.M)
-DEL = re.compile(r"^-\s*(?:async\s+)?def (test_\w+)", re.M)
+ADD = re.compile(r"^\+[ \t]*(?:async[ \t]+)?def (test_\w+)", re.M)
+DEL = re.compile(r"^-[ \t]*(?:async[ \t]+)?def (test_\w+)", re.M)
 FILES = re.compile(r"^\+\+\+ b/(\S+)", re.M)
-NEWFILE = re.compile(r"^--- /dev/null", re.M)
-REMOVED = re.compile(r"^-(?!--)\s*\S", re.M)
+# a test file created by the patch: "--- /dev/null", or a file whose first hunk starts from line 0 ("@@ -0,0")
+NEWFILE = re.compile(r"^--- /dev/null|^\+\+\+ b/\S+\n@@ -0,0 ", re.M)
+REMOVED = re.compile(r"^-(?!--)[ \t]*\S", re.M)
 ERRNAME = re.compile(r"\b[A-Z]\w+(?:Error|Exception)\b")
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ["p00-base", "p01", "p01b", "p02", "p03", "p03b", "p03c", "p05", "p06", "p07", "p09",

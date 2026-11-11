@@ -4,7 +4,7 @@
 
 ## Abstract
 
-A Gemma 4 E4B agent, offline in a 32,768-token window with about five minutes per SWE-bench-format task, almost never has a failing test to run: in 72 of our 90 development tasks the grading patch adds a new test function, in 55 of those it touches no existing test, and 1 report in 90 contains a traceback. The best runs solved 8 of 90; on the public leaderboard four submissions scored 0.06, 0.06, 0.03 and 0.03 on 58 hidden tasks, which, truncated, read as 4, 4, 2 and 2 (95% interval for 4 of 58, 1 to 10). Fifteen runs of 12 configurations all solved 3 to 8 of 90, and reruns of two configurations spanned 5 to 7 and 7 to 8, so no comparison of solve counts here is significant (largest gap 8 vs 3 of 90, Fisher p = 0.21). In 309 traced tasks, 243 of 308 failed edits asked to replace text not in the file.
+A Gemma 4 E4B agent, offline in a 32,768-token window with about five minutes per SWE-bench-format task, almost never has a failing test to run: in 71 of our 90 development tasks the grading patch adds a new test function, in 54 of those it touches no existing test, and 1 report in 90 contains a traceback. The best runs solved 8 of 90; on the public leaderboard four submissions scored 0.06, 0.06, 0.03 and 0.03 on 58 hidden tasks, which, truncated, read as 4, 4, 2 and 2 (95% interval for 4 of 58, 1 to 10). Fifteen runs of 12 configurations all solved 3 to 8 of 90, and reruns of two configurations spanned 5 to 7 and 7 to 8, so no comparison of solve counts here is significant (largest gap 8 vs 3 of 90, Fisher p = 0.21). In 309 traced tasks, 243 of 308 failed edits asked to replace text not in the file.
 
 The official sample prompt, run under our budget, was one of the 12 configurations and scored 8 of 90; our two-agent design, a read-only analyzer writing a brief for a coder, scored 7, 7 and 8. An edit lands when its anchor, the exact `old_string` the edit call must match, is in the file. Runs on the official sample prompt landed 62% to 69% of their edits; runs on our brief design landed 45% to 60%, pooled 53% (Section 5.3). Edit rules added to either family moved its landing rate by about six points at most. Pooled over three runs each, 270 tasks a side, the sample family left fewer tasks with no patch (33 vs 51, p = 0.04), produced more wrong fixes (134 vs 112, p = 0.07) and resolved the same number (24 vs 22). Across the three sample-prompt runs, 213 of 237 applied patches still failed the graded test: landing is necessary, not sufficient.
 
@@ -16,22 +16,22 @@ The setting is the Gemma 4 Developer Agent competition: an agent declared only i
 
 Contributions:
 
-1. **The task condition, bounded and reproducible.** 72 of 90 development tasks add a new test function and 1 report in 90 contains a traceback; the counting rule is one sentence (Section 2) and `scripts/task_properties.py` applies it to any SWE-bench-format file.
+1. **The task condition, bounded and reproducible.** 71 of 90 development tasks add a new test function and 1 report in 90 contains a traceback; `scripts/task_properties.py` applies the one-sentence counting rule (Section 2) to any SWE-bench-format file.
 2. **Landing versus outcome.** Of 658 `edit_file` calls in 309 traced tasks, 243 failed because the anchor was not in the file; 92 of those matched the brief and 101 matched neither the brief nor any tool output. Sample-prompt runs landed more edits, left fewer tasks with no patch (33 vs 51 of 270 pooled, p = 0.04) and resolved the same number (24 vs 22).
 3. **A pre-stated negative result, with its breaches.** Our brief design scored 7, 7 and 8 of 90 and did not beat the official sample prompt under the same budget (8 of 90, Fisher p = 1.0); on the leaderboard it scored 4 of 58 in one run, as did a no-brief retry loop.
 4. **A noise data point for small agents.** SD 2.5 tasks at p about 0.08, n = 90; repeats of two configurations spanned 5 to 7 and 7 to 8.
 
 ## 2. Setting
 
-The agent works on the repository at the pre-fix commit with nine tools (shell, file read, edit, write, patch submission, a budget query, three code-graph tools). Its diff is applied to a fresh copy, the hidden test patch is added, and pytest decides; edits to tests are stripped first.
+The agent works on the repository at the pre-fix commit with nine tools (shell, file read, edit, write, patch submission, budget query, three code-graph tools). Its diff is applied to a fresh copy, the hidden test patch is added, and pytest decides; edits to tests are stripped first.
 
-We split the 129 public tasks by repository into 90 development and 39 held-out tasks (seed 1234). Counting rule: a test patch "adds a new test function" when it contains a `+def test_` line and no `-def test_` line, and "touches no existing test" when every changed test line is an addition.
+We split the 129 public tasks by repository into 90 development and 39 held-out tasks (seed 1234). Counting rule: a test patch "adds a new test function" when it contains a `+def test_` line and no `-def test_` line, and "touches no existing test" when every changed test line is an addition. Pre-fix repositories confirm no added test function was defined in its file beforehand (`check_task_labels.py`).
 
 | Property of the 90 development tasks | Count |
 | --- | --- |
-| Test patch adds a new test function | 72 of 90 |
-| Adds new tests and touches no existing test line | 55 of 90 |
-| Also edits an existing test / creates a new test file | 17 / 0 of 90 |
+| Test patch adds a new test function | 71 of 90 |
+| Adds new tests and touches no existing test line | 54 of 90 |
+| Also edits an existing test / creates a new test file | 17 / 34 of 90 |
 | Report contains "Traceback" (5 in any case) | 1 of 90 |
 | Report names an *Error or *Exception class | 10 of 90 |
 | Reference fix touches one file / three or more | 65 / 13 of 90 |
@@ -126,15 +126,15 @@ We committed the falsification clauses at 15:28 on 2026-11-05 (1f9e162), with th
 
 ## 8. Limitations
 
-Ninety public tasks in three repositories, one to three runs per configuration, one model, one harness, no gold-patch or empty-patch run. The bucket contrast in Section 5.3 pools three single runs a side of two prompt families and does not separate the brief from the other prompt differences; the anchor decode counts calls and does not judge whether a landed edit was the right edit. We measure that the grading test is usually new; we do not show that this causes the 3-to-8 band; among 70 gradable development tasks, new-test ones were not solved less often (15 of 55 vs 1 of 15 ever solved, p = 0.16).
+Ninety public tasks in three repositories, one to three runs per configuration, one model, one harness, no gold-patch or empty-patch run. The bucket contrast in Section 5.3 pools three single runs a side of two prompt families and does not separate the brief from the other prompt differences; the anchor decode counts calls and does not judge whether a landed edit was the right edit. We measure that the grading test is usually new; we do not show that this causes the 3-to-8 band; among 70 gradable development tasks, new-test ones were not solved less often (14 of 54 vs 2 of 16 ever solved, p = 0.33).
 
 ## 9. Related work
 
-The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda [6] found scaffolding helps E4B, not larger models. Test feedback raised E4B's fix rate on planted library bugs from 26% to 42% [8]; our test patch adds a new test in 72 of 90 tasks. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; on other repositories, [9] flags hidden tests using names the statement never mentions. New here is counting, on the competition tasks, whether the grading test pre-exists.
+The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shapes success; Agentless [3] made reproduction tests a ranking signal for strong models. "On Randomness in Agentic Evals" [4] supplies the external noise figure in Section 5.1. Sweep [5] found 77% of `str_replace` failures were text not in the file; our 243 of 308 (79%) replicates that. Toeda [6] found scaffolding helps E4B, not larger models. Test feedback raised E4B's fix rate on planted library bugs from 26% to 42% [8]; our test patch adds a new test in 71 of 90 tasks. The condition follows from how SWE-bench tasks are built, the test patch being withheld from the agent [1]; on other repositories, [9] flags hidden tests using names the statement never mentions. New here is counting, on the competition tasks, whether the grading test pre-exists.
 
 ## 10. Reproducibility
 
-Code, prompts, configs, the experiment log and per-task files are at [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); the traces behind Section 5.2 are in the Kaggle dataset `voidwalkers123/gemma-agent-results-night2`. `results/<run>/edits.csv` holds run, task, lines, result, origin and file for every decoded edit call in the 15 decoded runs (ten full, two held-out, three smokes); Section 5.2's runs and the p08c smoke add anchor hashes, resend flags and `tasks.csv` (analyzer calls per task). Every run in Figure 2 has per-task bucket files. `results/task_table.csv` labels all 129 public tasks. Scripts: `make_splits.py`, `task_properties.py`, `task_table.py`, `buckets.py`, `noise_floor.py`, `edit_decode.py`, `make_figures.py`; notebook versions are in EXPERIMENTS.md, commands in the README.
+Code, prompts, configs, the experiment log and per-task files are at [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); the traces behind Section 5.2 are in the Kaggle dataset `voidwalkers123/gemma-agent-results-night2`. `results/<run>/edits.csv` holds run, task, lines, result, origin and file for every decoded edit call in the 15 decoded runs (ten full, two held-out, three smokes); Section 5.2's runs and the p08c smoke add anchor hashes, resend flags and `tasks.csv` (analyzer calls per task). `results/task_table.csv` labels all 129 public tasks. Scripts: `make_splits.py`, `task_properties.py`, `task_table.py`, `check_task_labels.py`, `buckets.py`, `noise_floor.py`, `edit_decode.py`, `make_figures.py`; notebook versions are in EXPERIMENTS.md, commands in the README.
 
 ## References
 

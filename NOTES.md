@@ -69,3 +69,8 @@ Running log, newest at the bottom. The results table is EXPERIMENTS.md; the find
 2026-11-10
 - extended decode (cpu notebook v17, dataset v1 = p03b, p03c, p05, heldout-p03, plus the p08c smoke): edits.csv now carries an anchor hash and a resend flag, tasks.csv the analyzer's tool calls per task. over the four runs: 658 calls, 308 failed, 87 failures repeat the anchor of the failed edit just before them in the task (74 not found, 9 wrong path, 3 occurs-N-times, 1 budget), 105 repeat any earlier failed anchor; the 243 not-found calls are 157 distinct anchors; 524 distinct anchors in all. the earlier '45' counted only a repeat as the very next action. analyzer made no tool call in 33 of 309 tasks; 5 of those resolved, 20 of the other 276.
 - p08b on the public leaderboard: 0.06 = 4/58, same as p03. a loop of single-agent attempts with no analyzer ties the best two-agent run.
+
+## 2026-11-11 correction
+
+- Counting rule fixed: the patch regex let `\s*` cross a line break, so a blank added line followed by an unchanged `def test_` line counted as an added test (rich_3006). With `[ \t]*` the dev counts are 71 add a new test function (was 72) and 54 touch no existing test (was 55); all 129: 98 and 77. The new-test-file rule missed files created with `--- a/... @@ -0,0`: 34 of 90 dev test patches create a test file (was reported as 0).
+- Checked against the pre-fix repository snapshots (scripts/check_task_labels.py): in all 98 labelled tasks no added test function exists in its file before the fix.
