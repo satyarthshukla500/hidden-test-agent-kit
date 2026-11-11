@@ -10,7 +10,7 @@ The official sample prompt, run under our budget, was one of the 12 configuratio
 
 ## 1. Introduction
 
-It is natural to change a prompt, run once and report the new score. At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything.
+At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything.
 
 The setting is the Gemma 4 Developer Agent competition: an agent declared only in YAML and Markdown prompts must fix real bugs in fastapi, rich, requests and httpx, offline, inside a 32,768-token window and about five minutes per task. We counted how often a task supplies a failing test or traceback the agent can run.
 
@@ -100,7 +100,7 @@ Rule: state a difference as two counts with a p-value; treat it as unproven when
 
 `scripts/edit_decode.py` reads the traces of p03b, p03c, p05 and held-out p03 (309 tasks). The coder called `edit_file` 658 times: 350 landed, 308 failed, the failures being 243 "old_string not found", 25 "occurs N times", 21 wrong path, 8 budget, 5 empty `old_string` and 6 other (5 no-op, 1 ambiguous). For the 243, where had the anchor text appeared in what the coder had seen? 92 matched text in the brief (88 exactly, 4 up to whitespace), 29 a file window the coder had read, 12 the coder's own earlier text, 7 only analyzer output the coder never saw, 2 shell or search output, and 101 matched nothing in the brief, the file windows the coder had read or any tool output, exactly or with spaces collapsed; the decode does not see the coder's own earlier edit arguments, nor the harness's default history-compaction summaries (on in our runs), so some of the 101 may be near-misses or copies rather than inventions. File windows are tested before the brief, so 92 is a lower bound. Counts are per call: 87 of the 308 failures repeated the anchor of the failed edit just before them in the task, and the 243 missing-anchor calls used 157 distinct anchors, counted per task.
 
-The brief's `CODE` section is the analyzer's paraphrase, and the design relies on it as the anchor source. The analyzer wrote 33 of 309 briefs without any tool call; 5 of those tasks resolved against 20 of the other 276 (p = 0.16), so a brief written without reading the code did not by itself cost resolutions. In the sample-prompt runs, which have no brief, most missing anchors matched nothing the agent had received (s02 40 of 51, s04 51 of 68).
+The brief's `CODE` section is the analyzer's paraphrase, and the design relies on it as the anchor source. The analyzer wrote 33 of 309 briefs without any tool call; 5 of those tasks resolved against 20 of the other 276 (p = 0.16), so a tool-less brief did not by itself cost resolutions. In the sample-prompt runs, which have no brief, most missing anchors matched nothing the agent had received (s02 40 of 51, s04 51 of 68).
 
 ![Edit failures by cause and source](figures/fig2_edit_failures.png)
 
@@ -126,7 +126,7 @@ We committed the falsification clauses at 15:28 on 2026-11-05 (1f9e162), with th
 
 ## 8. Limitations
 
-Ninety public tasks in three repositories, one to three runs per configuration, one model, one harness, no gold-patch or empty-patch run. The bucket contrast in Section 5.3 pools three single runs a side of two prompt families and does not separate the brief from the other prompt differences; the anchor decode counts calls and does not judge whether a landed edit was the right edit. We measure that the grading test is usually new; we do not show that this causes the 3-to-8 band.
+Ninety public tasks in three repositories, one to three runs per configuration, one model, one harness, no gold-patch or empty-patch run. The bucket contrast in Section 5.3 pools three single runs a side of two prompt families and does not separate the brief from the other prompt differences; the anchor decode counts calls and does not judge whether a landed edit was the right edit. We measure that the grading test is usually new; we do not show that this causes the 3-to-8 band; among 70 gradable development tasks, new-test ones were not solved less often (15 of 55 vs 1 of 15 ever solved, p = 0.16).
 
 ## 9. Related work
 
@@ -134,7 +134,7 @@ The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shap
 
 ## 10. Reproducibility
 
-Code, prompts, configs, the experiment log and per-task files are at [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); the traces behind Section 5.2 are in the Kaggle dataset `voidwalkers123/gemma-agent-results-night2`. `results/<run>/edits.csv` holds run, task, lines, result, origin and file for every decoded edit call in the 15 decoded runs (ten full, two held-out, three smokes); for the four runs of Section 5.2 and the p08c smoke it adds an anchor hash and a resend flag, and `results/<run>/tasks.csv` gives the analyzer's tool calls per task. Scripts: `make_splits.py`, `task_properties.py`, `buckets.py`, `noise_floor.py`, `edit_decode.py`, `make_figures.py`. Per-task bucket files exist for every run in Figure 2; notebook versions are in EXPERIMENTS.md, commands in the README.
+Code, prompts, configs, the experiment log and per-task files are at [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); the traces behind Section 5.2 are in the Kaggle dataset `voidwalkers123/gemma-agent-results-night2`. `results/<run>/edits.csv` holds run, task, lines, result, origin and file for every decoded edit call in the 15 decoded runs (ten full, two held-out, three smokes); Section 5.2's runs and the p08c smoke add anchor hashes, resend flags and `tasks.csv` (analyzer calls per task). Every run in Figure 2 has per-task bucket files. `results/task_table.csv` labels all 129 public tasks. Scripts: `make_splits.py`, `task_properties.py`, `task_table.py`, `buckets.py`, `noise_floor.py`, `edit_decode.py`, `make_figures.py`; notebook versions are in EXPERIMENTS.md, commands in the README.
 
 ## References
 
