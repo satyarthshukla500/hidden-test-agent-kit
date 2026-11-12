@@ -10,14 +10,12 @@ The official sample prompt, run under our budget, was one of the 12 configuratio
 
 ## 1. Introduction
 
-At a solve rate near 8% on 90 tasks, one run has a standard deviation of 2.5 tasks, so a three-task gain is not evidence of anything.
-
 The setting is the Gemma 4 Developer Agent competition: an agent declared only in YAML and Markdown prompts must fix real bugs in fastapi, rich, requests and httpx, offline, inside a 32,768-token window and about five minutes per task. We counted how often a task supplies a failing test or traceback the agent can run.
 
 Contributions:
 
 1. **The task condition, bounded and reproducible.** 71 of 90 development tasks add a new test function and 1 report in 90 contains a traceback; `scripts/task_properties.py` applies the one-sentence counting rule (Section 2) to any SWE-bench-format file.
-2. **Landing versus outcome.** Of 658 `edit_file` calls in 309 traced tasks, 243 failed because the anchor was not in the file; 92 of those matched the brief and 101 matched neither the brief nor any tool output. Sample-prompt runs landed more edits, left fewer tasks with no patch (33 vs 51 of 270 pooled, p = 0.04) and resolved the same number (24 vs 22).
+2. **Landing versus outcome.** Of 658 `edit_file` calls in 309 traced tasks, 243 failed because the anchor was not in the file; 92 of those matched the brief and 101 matched neither the brief nor any tool output. Sample-prompt runs landed more edits, left fewer tasks with no patch (33 vs 51 of 270, p = 0.04) but resolved the same number (24 vs 22).
 3. **A pre-stated negative result, with its breaches.** Our brief design scored 7, 7 and 8 of 90 and did not beat the official sample prompt under the same budget (8 of 90, Fisher p = 1.0); on the leaderboard it scored 4 of 58 in one run, as did a no-brief retry loop.
 4. **A noise data point for small agents.** SD 2.5 tasks at p about 0.08, n = 90; repeats of two configurations spanned 5 to 7 and 7 to 8.
 
@@ -46,7 +44,7 @@ At least 20 of the 90 development tasks are ungradable in the offline sandbox (1
 
 ## 3. Method
 
-Two Gemma 4 E4B instances split the work. The **analyzer** is a read-only sub-agent with 12 tool calls and no conversation history: it greps for the report's identifiers, writes and runs a repro script, and answers with a **brief** whose `CODE` section quotes the code and whose `EDIT_SITES` section gives an exact `old_string` per site. The **coder** calls the analyzer once, applies the top edit with `edit_file`, re-runs the check, repairs at most twice, runs the module's tests and always submits. `include_contents: none` also hides the repository layout from the analyzer. We describe the design because it lost (Section 5.3).
+Two Gemma 4 E4B instances split the work. The **analyzer** is a read-only sub-agent with 12 tool calls and no conversation history: it greps for the report's identifiers, writes and runs a repro script, and answers with a **brief** whose `CODE` section quotes the code and whose `EDIT_SITES` section gives an exact `old_string` per site. The **coder** calls the analyzer once, applies the top edit with `edit_file`, re-runs the check, repairs at most twice, runs the module's tests and always submits. `include_contents: none` also hides the repository layout from the analyzer.
 
 Sampling: temperature 0.2, top_p 0.9, top_k 40, seed 7; 6,144 output tokens and a 2,048-token thinking budget from p03 (Section 4) on (8,192 and 3,072 before). The comparison is the official sample agent (`variants/sample-e4b`): its `agent.yaml` includes `code_analyzer` as an optional agent tool; its `sampling.yaml` reserves 16,384 output tokens.
 
@@ -72,7 +70,7 @@ No configuration left the band of 3 to 8 solved tasks out of 90. Below, p-runs a
 
 *Figure 2. Resolved tasks for every full run (of 90), two held-out runs (of 39) and three 20-task smokes.*
 
-On the public leaderboard of 58 hidden tasks, p03 and p08b (a no-brief retry loop) scored 0.06, s01 and s04 0.03; truncated, 4 and 2 of 58. s02, s03 and s04 each scored 8 of 90 and the three p03 repeats 7, 7 and 8 (any single-run pair, Fisher p = 1.0; pooled 24 vs 22 of 270, p = 0.88); p07's 3 against the pooled p03 repeats' 22 of 270 gives p = 0.15, unproven by the Section 5.1 rule.
+On the public leaderboard of 58 hidden tasks, p03 and p08b (a no-brief retry loop) scored 0.06, s01 and s04 0.03; truncated, 4 and 2 of 58. s02, s03 and s04 each scored 8 of 90 and the three p03 repeats 7, 7 and 8 (any single-run pair, Fisher p = 1.0); p07's 3 against the pooled p03 repeats' 22 of 270 gives p = 0.15, unproven by the Section 5.1 rule.
 
 Unresolved tasks fall into three buckets: wrong fix (patch applied, test output not a mix of passes and failures), target still failing (patch applied, some tests pass, the graded test fails) and no patch (empty diff; s01 also has 2 budget stops); Figure 3 gives the counts per run.
 
@@ -92,7 +90,7 @@ Repeated configurations: p01 and p01b scored 7 and 5 and disagreed on 8 tasks (M
 
 ![Per-task solve matrix](figures/fig4_consistency.png)
 
-*Figure 4. Times solved per task across 8 two-agent runs: 14 of 90 ever solved, 9 in three or more runs, 1 in all eight.*
+*Figure 4. Times solved per task across 8 two-agent runs: 14 of 90 ever solved.*
 
 Rule: state a difference as two counts with a p-value; treat it as unproven when p is above 0.05 or both counts sit inside the repeat spread (5 to 8 of 90). The leaderboard applied it for us: local 8 (s04) versus 7 (p03) became hidden 2 versus 4 of 58.
 
@@ -104,7 +102,7 @@ The brief's `CODE` section is the analyzer's paraphrase, and the design relies o
 
 ![Edit failures by cause and source](figures/fig2_edit_failures.png)
 
-*Figure 5. The 658 edit calls of the four decoded briefed runs: failures by cause, the 243 missing anchors by what they matched, landing by anchor length (1 line 39 of 89, 2 to 8 lines 243 of 410, 9 or more 68 of 159).*
+*Figure 5. The 658 edit calls of the four decoded briefed runs: failures by cause, the 243 missing anchors by what they matched, landing by anchor length.*
 
 ### 5.3 What landed edits became
 
@@ -117,8 +115,8 @@ Reserved output sets a hard prompt ceiling: 32,768 minus 8,192 is 24,576, and th
 ## 6. What to do differently
 
 1. **Repeat before you compare.** Run the unchanged configuration at least twice and treat anything inside their spread as unproven.
-2. **Reserve less output.** In a 32,768-token window, 6,144 reserved tokens removed all 12 overflows counted at 8,192.
-3. **Count landed edits and wrong fixes together.** The design that landed more edits had fewer empty patches and more wrong fixes at the same resolved count; report all three buckets per run.
+2. **Reserve less output.** 6,144 reserved tokens removed all 12 overflows counted at 8,192.
+3. **Count landed edits and wrong fixes together.** The design that landed more edits had fewer empty patches and more wrong fixes at the same resolved count.
 
 ## 7. What we wrote down, and what happened
 
@@ -134,14 +132,14 @@ The format is SWE-bench's [1]. SWE-agent [2] showed that the tool interface shap
 
 ## 10. Reproducibility
 
-Code, prompts, configs, the experiment log and per-task files are at [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); raw logs are not published; edits behind Section 5.2 are below. `results/<run>/edits.csv` holds run, task, lines, result, origin and file for every decoded edit call in the 15 decoded runs (ten full, two held-out, three smokes); Section 5.2's runs and the p08c smoke add anchor hashes, resend flags and `tasks.csv` (analyzer calls per task). `results/task_table.csv`, also Kaggle dataset `voidwalkers123/gemma-4-agent-hidden-test-task-table`, labels all 129 public tasks. Scripts: `make_splits.py`, `task_properties.py`, `task_table.py`, `check_task_labels.py`, `buckets.py`, `noise_floor.py`, `edit_decode.py`, `make_figures.py`; notebook versions: EXPERIMENTS.md; commands: README.
+Code, prompts, configs, the experiment log and per-task files: [github.com/satyarthshukla500/hidden-test-agent-kit](https://github.com/satyarthshukla500/hidden-test-agent-kit) (MIT). Runs are versions of the Kaggle notebook [voidwalkers123/getting-started-gemma-4-developer-agent](https://www.kaggle.com/code/voidwalkers123/getting-started-gemma-4-developer-agent); raw logs are not published; edits behind Section 5.2 are below. `results/<run>/edits.csv` has every decoded edit call of the 15 decoded runs; Section 5.2's runs and the p08c smoke add anchor hashes, resend flags and `tasks.csv` (analyzer calls per task). `results/task_table.csv`, also Kaggle dataset `voidwalkers123/gemma-4-agent-hidden-test-task-table`, labels all 129 public tasks. Scripts are in `scripts/`; notebook versions: EXPERIMENTS.md; commands: README.
 
 ## References
 
-1. C. E. Jimenez, J. Yang, A. Wettig, S. Yao, K. Pei, O. Press, K. Narasimhan. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? ICLR 2024. https://arxiv.org/abs/2310.06770
-2. J. Yang, C. E. Jimenez, A. Wettig, K. Lieret, S. Yao, K. Narasimhan, O. Press. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. NeurIPS 2024. https://arxiv.org/abs/2405.15793
-3. C. S. Xia, Y. Deng, S. Dunn, L. Zhang. Agentless: Demystifying LLM-based Software Engineering Agents. arXiv:2407.01489, 2024. https://arxiv.org/abs/2407.01489
-4. B. H. Bjarnason, A. Silva, M. Monperrus. On Randomness in Agentic Evals. arXiv:2602.07150, 2026. https://arxiv.org/abs/2602.07150
+1. C. E. Jimenez et al. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? ICLR 2024. https://arxiv.org/abs/2310.06770
+2. J. Yang et al. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. NeurIPS 2024. https://arxiv.org/abs/2405.15793
+3. C. S. Xia et al. Agentless: Demystifying LLM-based Software Engineering Agents. arXiv, 2024. https://arxiv.org/abs/2407.01489
+4. B. H. Bjarnason, A. Silva, M. Monperrus. On Randomness in Agentic Evals. arXiv, 2026. https://arxiv.org/abs/2602.07150
 5. W. Zeng (Sweep). Decreasing agentic code editing failures with output normalization. 2025. Archived at https://web.archive.org/web/20260806152905/https://blog.sweep.dev/posts/jetbrains-coding-agent
 6. T. Toeda. Scaffolding Helps the Smallest Gemma 4 Agent, Not the Larger Ones. Zenodo, 2026. https://zenodo.org/records/23834104
 7. J. Wold. 27 fastapi tasks cannot pass in the provided sandbox (missing inline_snapshot and dirty_equals); host reply: private scoring excludes these tasks. Kaggle discussion, 2026. https://www.kaggle.com/competitions/gemma-4-developer-agent-paper/discussion/753370
